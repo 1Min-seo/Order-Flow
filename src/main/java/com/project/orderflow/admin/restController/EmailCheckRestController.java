@@ -2,6 +2,7 @@ package com.project.orderflow.admin.restController;
 
 import com.project.orderflow.admin.dto.EmailCheckDto;
 import com.project.orderflow.admin.dto.EmailRequestDto;
+import com.project.orderflow.admin.dto.SignUpDto;
 import com.project.orderflow.admin.service.MailSendService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -56,4 +57,12 @@ public class EmailCheckRestController {
         }
     }
 
-    }
+//    @PostMapping("/signup")
+//    public ResponseEntity<?> signup(@RequestBody @Valid SignUpDto signUpDto){
+//        try{
+//
+//        }
+//
+//    }
+
+}

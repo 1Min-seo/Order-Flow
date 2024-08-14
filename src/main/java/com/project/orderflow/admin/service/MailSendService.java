@@ -48,7 +48,7 @@ public class MailSendService {
         String content =
                 "ORDER FLOW에 방문해주셔서 감사합니다." +
                         "<br><br>" +
-                        "인증 번호는 " + authNumber + "입니다." +
+                        "인증 번호는 " + authNumber + " 입니다." +
                         "<br>" +
                         "인증번호를 제대로 입력해주세요.";
         mailSend(setFrom, toMail, title, content);
