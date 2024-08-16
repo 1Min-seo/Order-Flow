@@ -29,6 +29,7 @@ public class Owner {
     @Column(nullable = false, unique = true)
     private String businessNumber;
 
+
     @OneToMany(mappedBy = "owner")
     private List<TableOrder> tableOrders;
 
@@ -38,7 +39,7 @@ public class Owner {
         this.name = name;
         this.passwordHash = passwordHash;
         this.businessNumber = businessNumber;
-    }
 
+    }
 
 }
