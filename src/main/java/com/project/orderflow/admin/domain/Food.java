@@ -28,4 +28,5 @@ public class Food {
         this.description = description;
         this.price = price;
     }
+
 }

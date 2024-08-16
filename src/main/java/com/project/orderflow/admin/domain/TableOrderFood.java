@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class TableOrderFood {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
