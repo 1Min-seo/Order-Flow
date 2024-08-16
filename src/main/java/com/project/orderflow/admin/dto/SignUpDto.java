@@ -20,4 +20,5 @@ public class SignUpDto {
 
     @NotEmpty(message = "사업자 번호를 입력해 주세요")
     private String businessNumber;
+
 }

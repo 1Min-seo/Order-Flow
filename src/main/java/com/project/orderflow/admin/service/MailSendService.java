@@ -69,4 +69,5 @@ public class MailSendService {
         }
         redisUtil.setDataExpire(authNumber, toMail, 60 * 5L);
     }
+
 }

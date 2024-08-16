@@ -10,5 +10,4 @@ public class OrderflowApplication {
         SpringApplication.run(OrderflowApplication.class, args);
         System.out.println("Start!!");
     }
-
 }
