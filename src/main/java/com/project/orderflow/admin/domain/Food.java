@@ -22,6 +22,10 @@ public class Food {
     @Column(nullable = false)
     private double price;
 
+    @ManyToOne
+    @JoinColumn(name = "table_management_id", nullable = false)
+    private TableManagement tableManagement;
+
     @Builder
     public Food(String name, String description, double price) {
         this.name = name;

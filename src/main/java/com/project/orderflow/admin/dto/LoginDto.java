@@ -3,9 +3,8 @@ package com.project.orderflow.admin.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
-import lombok.Setter;
 
-@Getter @Setter
+@Getter
 public class LoginDto {
     @Email
     @NotEmpty(message = "이메일일 입력해 주세요")

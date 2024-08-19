@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-import java.util.UUID;
 
 @Entity
 @NoArgsConstructor
@@ -29,9 +27,9 @@ public class Owner {
     @Column(nullable = false, unique = true)
     private String businessNumber;
 
+    @OneToOne(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    private TableManagement tableManagement;
 
-    @OneToMany(mappedBy = "owner")
-    private List<TableOrder> tableOrders;
 
     @Builder
     public Owner(String email, String name, String passwordHash, String businessNumber) {

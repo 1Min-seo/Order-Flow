@@ -47,6 +47,13 @@ public class AuthRestController {
     public ResponseEntity<?> signUpCheck(@RequestBody SignUpDto signUpDto){
         log.info("회원가입 요청");
         boolean isVerified= mailSendService.checkAuthNum(signUpDto.getEmail(), signUpDto.getVerifyCode());
+
+        if (signUpDto.getVerifyCode().isEmpty()) {
+            log.info("인증 코드 null");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("message", "인증코드를 입력해 주세요."));
+        }
+
         if(!isVerified){
             log.info("이메일 인증 코드 불일치");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)

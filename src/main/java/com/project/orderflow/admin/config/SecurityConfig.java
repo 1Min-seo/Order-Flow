@@ -21,7 +21,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/mailSend", "/mailAuthCheck").permitAll()
+                        .requestMatchers("/api/**", "/mailSend", "/mailAuthCheck").permitAll()
                         .anyRequest().authenticated()
                 )
                 .httpBasic(withDefaults -> withDefaults.disable())
