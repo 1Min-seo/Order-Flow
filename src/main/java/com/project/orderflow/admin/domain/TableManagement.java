@@ -1,5 +1,6 @@
 package com.project.orderflow.admin.domain;
 
+import com.project.orderflow.admin.service.SeatService;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,22 +33,21 @@ public class TableManagement {
     private List<Food> foods=new ArrayList<>();
 
     @Builder
-    public TableManagement(Owner owner){
+    public TableManagement(Owner owner, int numberOfSeats) {
         this.owner=owner;
+        this.numberOfSeats = numberOfSeats;
         owner.setTableManagement(this);
     }
 
-    public void createSeats(int numberOfSeats){
+    public void createSeats(SeatService seatService){
         for(int i=0; i<numberOfSeats; i++){
-            this.numberOfSeats=numberOfSeats;
-            String seatCode=generateSeatCode();
             Seat seat=Seat.builder()
                     .tableNumber(String.valueOf(i+1))
-                    .authCode(seatCode)
+                    .authCode(generateSeatCode())
                     .tableManagement(this)
                     .isActive(false)
                     .build();
-            seats.add(seat);
+            seatService.saveSeat(seat);
         }
     }
 

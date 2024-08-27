@@ -10,11 +10,22 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Service
 public class OwnerService {
     private final OwnerRepository ownerRepository;
     private final PasswordEncoder passwordEncoder;
+
+    public Owner findOwnerById(Long ownerId){
+        Optional<Owner> owner= ownerRepository.findById(ownerId);
+        if(owner.isPresent()){
+            return owner.get();
+        }else{
+            throw new IllegalStateException("Owner 찾을 수 없음");
+        }
+    }
 
     public Owner registerOwner (@RequestBody SignUpDto signUpDto){
         String encodedPassword = passwordEncoder.encode(signUpDto.getPassword());
