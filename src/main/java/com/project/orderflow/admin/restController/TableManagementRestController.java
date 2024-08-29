@@ -27,4 +27,22 @@ public class TableManagementRestController {
         log.info(String.format("테이블 %d개 셋업 완료", tableSetUpDto.getNumberOfSeats()));
         return ResponseEntity.ok("ok");
     }
+
+    @PostMapping("/addSeats/{ownerId}")
+    public ResponseEntity<?> addSeats(@PathVariable(name="ownerId") Long ownerId, @RequestParam int additionalSeats){
+        Owner owner=ownerService.findOwnerById(ownerId);
+        tableManagementService.addSeats(owner, additionalSeats);
+
+        log.info("좌석 {}개 추가", additionalSeats);
+        return ResponseEntity.ok("좌석 추가 완료");
+    }
+
+    @PostMapping("/removeSeats/{ownerId}")
+    public ResponseEntity<?> removeSeats(@PathVariable(name="ownerId") Long ownerId, @RequestParam int seatsToRemove){
+        Owner owner=ownerService.findOwnerById(ownerId);
+        tableManagementService.deleteSeats(owner, seatsToRemove);
+
+        log.info("좌석 {}개 삭제", seatsToRemove);
+        return ResponseEntity.ok("좌석 삭제 완료");
+    }
 }

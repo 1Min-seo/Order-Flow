@@ -61,4 +61,8 @@ public class TableManagement {
         return sb.toString();
     }
 
+    public void setNumberOfSeats(int numberOfSeats) {
+        this.numberOfSeats=numberOfSeats;
+    }
+
 }

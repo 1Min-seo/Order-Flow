@@ -36,5 +36,9 @@ public class SeatService {
             throw new IllegalStateException("유효하지 않는 인증코드 입니다.");
         }
     }
+
+    public void deleteSeat(Seat seat){
+        seatRepository.delete(seat);
+    }
 }
 

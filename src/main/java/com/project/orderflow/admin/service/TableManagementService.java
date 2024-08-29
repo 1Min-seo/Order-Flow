@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Random;
 
 @Service
@@ -31,6 +32,8 @@ public class TableManagementService {
     }
 
     private void createSeatsForTable(TableManagement tableManagement) {
+        int existingSeats=tableManagement.getSeats().size();
+        int newSeats=tableManagement.getNumberOfSeats();
         for (int i = 0; i < tableManagement.getNumberOfSeats(); i++) {
             Seat seat = Seat.builder()
                     .tableNumber(String.valueOf(i + 1))
@@ -40,7 +43,6 @@ public class TableManagementService {
                     .build();
             seatService.saveSeat(seat);
 
-            log.info("생성된 좌석: 테이블 번호 = {}, 인증 코드 = {}", seat.getTableNumber(), seat.getAuthCode());
         }
     }
 
@@ -51,6 +53,43 @@ public class TableManagementService {
             sb.append(r.nextInt(10));
         }
         return sb.toString();
+    }
+
+    public void addSeats(Owner owner, int additionalSeats){
+        TableManagement tableManagement=owner.getTableManagement();
+
+        if(tableManagement!=null){
+            int currentSeats=tableManagement.getNumberOfSeats();
+            tableManagement.setNumberOfSeats(currentSeats+additionalSeats);
+            createSeatsForTable(tableManagement);
+            tableManagementRepository.save(tableManagement);
+        }
+
+    }
+
+    public void deleteSeats(Owner owner, int removeSeats){
+        TableManagement tableManagement=owner.getTableManagement();
+
+        if(tableManagement!=null){
+            int currentSeats=tableManagement.getSeats().size();
+            int newSeatCount=currentSeats-removeSeats;
+
+            log.info("현재 좌석 개수: {}", newSeatCount);
+
+            if(newSeatCount<1){
+                throw new IllegalArgumentException("좌석은 1개 이상이어야 합니다.");
+            }
+
+            List<Seat> seats= tableManagement.getSeats();
+            for(int i= currentSeats-1; i>=newSeatCount; i--){
+                seatService.deleteSeat(seats.get(i));
+                seats.remove(i);
+            }
+
+            tableManagement.setNumberOfSeats(newSeatCount);
+            tableManagementRepository.save(tableManagement);
+
+        }
     }
 }
 
