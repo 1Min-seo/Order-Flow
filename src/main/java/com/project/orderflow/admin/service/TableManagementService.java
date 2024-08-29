@@ -26,15 +26,14 @@ public class TableManagementService {
                 .build();
 
         tableManagement = tableManagementRepository.save(tableManagement);
-        createSeatsForTable(tableManagement);
+        addSeatsToTableManagement(tableManagement, numberOfSeats);
 
         return tableManagement;
     }
 
-    private void createSeatsForTable(TableManagement tableManagement) {
-        int existingSeats=tableManagement.getSeats().size();
-        int newSeats=tableManagement.getNumberOfSeats();
-        for (int i = 0; i < tableManagement.getNumberOfSeats(); i++) {
+    private void addSeatsToTableManagement(TableManagement tableManagement, int numberOfSeats) {
+        int currentSeats=tableManagement.getSeats().size();
+        for (int i = currentSeats; i < currentSeats+numberOfSeats; i++) {
             Seat seat = Seat.builder()
                     .tableNumber(String.valueOf(i + 1))
                     .authCode(generateSeatCode())
@@ -42,8 +41,9 @@ public class TableManagementService {
                     .isActive(false)
                     .build();
             seatService.saveSeat(seat);
-
+            tableManagement.getSeats().add(seat);
         }
+        tableManagementRepository.save(tableManagement);
     }
 
     private String generateSeatCode() {
@@ -55,16 +55,12 @@ public class TableManagementService {
         return sb.toString();
     }
 
-    public void addSeats(Owner owner, int additionalSeats){
-        TableManagement tableManagement=owner.getTableManagement();
+    public void addSeats(Owner owner, int additionalSeats) {
+        TableManagement tableManagement = owner.getTableManagement();
 
-        if(tableManagement!=null){
-            int currentSeats=tableManagement.getNumberOfSeats();
-            tableManagement.setNumberOfSeats(currentSeats+additionalSeats);
-            createSeatsForTable(tableManagement);
-            tableManagementRepository.save(tableManagement);
+        if (tableManagement != null) {
+            addSeatsToTableManagement(tableManagement, additionalSeats);
         }
-
     }
 
     public void deleteSeats(Owner owner, int removeSeats){
@@ -76,8 +72,8 @@ public class TableManagementService {
 
             log.info("현재 좌석 개수: {}", newSeatCount);
 
-            if(newSeatCount<1){
-                throw new IllegalArgumentException("좌석은 1개 이상이어야 합니다.");
+            if(newSeatCount<0){
+                throw new IllegalArgumentException("좌석은 0개 이상이어야 합니다.");
             }
 
             List<Seat> seats= tableManagement.getSeats();

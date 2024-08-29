@@ -29,11 +29,11 @@ public class TableManagementRestController {
     }
 
     @PostMapping("/addSeats/{ownerId}")
-    public ResponseEntity<?> addSeats(@PathVariable(name="ownerId") Long ownerId, @RequestParam int additionalSeats){
+    public ResponseEntity<?> addSeats(@PathVariable(name="ownerId") Long ownerId, @RequestParam int seatsToAdd){
         Owner owner=ownerService.findOwnerById(ownerId);
-        tableManagementService.addSeats(owner, additionalSeats);
+        tableManagementService.addSeats(owner, seatsToAdd);
 
-        log.info("좌석 {}개 추가", additionalSeats);
+        log.info("좌석 {}개 추가", seatsToAdd);
         return ResponseEntity.ok("좌석 추가 완료");
     }
 

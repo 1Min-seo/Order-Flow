@@ -37,6 +37,7 @@ public class SeatService {
         }
     }
 
+
     public void deleteSeat(Seat seat){
         seatRepository.delete(seat);
     }
