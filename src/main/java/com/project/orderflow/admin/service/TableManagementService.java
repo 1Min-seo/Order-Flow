@@ -25,8 +25,8 @@ public class TableManagementService {
                 .numberOfSeats(numberOfSeats)
                 .build();
 
-        tableManagement = tableManagementRepository.save(tableManagement);
         addSeatsToTableManagement(tableManagement, numberOfSeats);
+        tableManagement = tableManagementRepository.save(tableManagement);
 
         return tableManagement;
     }
