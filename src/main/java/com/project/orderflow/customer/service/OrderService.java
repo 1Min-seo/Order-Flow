@@ -4,6 +4,8 @@ import com.project.orderflow.customer.domain.OrderMenu;
 import com.project.orderflow.admin.domain.Seat;
 import com.project.orderflow.customer.domain.TableOrder;
 import com.project.orderflow.customer.domain.enums.OrderStatus;
+import com.project.orderflow.customer.dto.OrderMenuReqDto;
+import com.project.orderflow.customer.dto.TableOrderReqDto;
 import com.project.orderflow.customer.repository.OrderMenuRepository;
 import com.project.orderflow.customer.repository.TableOrderRepository;
 import com.project.orderflow.admin.repository.SeatRepository;
@@ -11,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -48,5 +51,31 @@ public class OrderService {
 
         tableOrder.markAsOrdered();
         return tableOrderRepository.save(tableOrder);
+    }
+    /**
+     * 테이블 별 주문 내역 조회
+     */
+    public List<TableOrderReqDto> getOrdersByTable(String tableNum) {
+        Seat seat = seatRepository.findByTableNum(tableNum)
+                .orElseThrow(() -> new RuntimeException("Table not found"));
+
+        List<TableOrder> tableOrders = tableOrderRepository.findByTable(seat);
+
+        // 엔티티를 DTO로 변환
+        return tableOrders.stream()
+                .map(this::convertToDto)
+                .toList();
+    }
+    private TableOrderReqDto convertToDto(TableOrder order) {
+        List<OrderMenuReqDto> orderMenuDtos = order.getOrderMenus().stream()
+                .map(menu -> new OrderMenuReqDto(menu.getId(), menu.getMenu().getName(), menu.getQuantity()))
+                .toList();
+
+        return new TableOrderReqDto(
+                order.getOrderAt(),
+                order.getStatus(),
+                order.getTotalPrice(),
+                orderMenuDtos
+        );
     }
 }

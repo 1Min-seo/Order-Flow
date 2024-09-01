@@ -2,12 +2,14 @@ package com.project.orderflow.customer.controller;
 
 import com.project.orderflow.customer.domain.TableOrder;
 import com.project.orderflow.customer.dto.OrderResDto;
+import com.project.orderflow.customer.dto.TableOrderReqDto;
 import com.project.orderflow.customer.service.OrderService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/order")
@@ -26,5 +28,10 @@ public class OrderController {
                 tableOrder.getTotalPrice());
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/table/{tableNum}")
+    public List<TableOrderReqDto> getOrdersByTable(@PathVariable String tableNum) {
+        return orderService.getOrdersByTable(tableNum);
     }
 }
