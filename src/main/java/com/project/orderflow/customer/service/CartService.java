@@ -73,4 +73,23 @@ public class CartService {
         tableOrder.addOrderMenus(orderMenus);
         tableOrderRepository.save(tableOrder);
     }
+
+    /**
+     * 장바구니 메뉴 수량 수정
+     */
+    @Transactional
+    public OrderMenu updateCartMenu(Long orderMenuId, OrderMenuReqDto orderMenuReqDto) {
+        // 장바구니 항목 조회
+        OrderMenu orderMenu = orderMenuRepository.findById(orderMenuId)          // 기존 장바구니 아이템 검색
+                .orElseThrow(() -> new RuntimeException("Cart item not found"));
+
+        // OrderMenu의 메서드를 사용하여 수량과 가격 업데이트
+        if (orderMenu.getStatus() == OrderStatus.CART) {
+            orderMenu.updateQuantity(orderMenuReqDto.getQuantity());
+        } else {
+            throw new RuntimeException("장바구니를 수정할 수 없습니다.");
+        }
+        return orderMenuRepository.save(orderMenu);
+    }
+
 }
