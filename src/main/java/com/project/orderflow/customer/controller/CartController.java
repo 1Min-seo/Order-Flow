@@ -11,13 +11,22 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
 @RestController
 @RequestMapping("/api/cart")
 @RequiredArgsConstructor
 @Tag(name = "Cart", description = "Cart API")
 public class CartController {
+
     private final CartService cartService;
+
+    /**
+     * 장바구니 조회
+     */
+    @GetMapping
+    public ResponseEntity<List<OrderMenuReqDto>> getCartMenus(@RequestParam String tableNum) {
+        List<OrderMenuReqDto> cartMenus = cartService.getCartMenus(tableNum);
+        return ResponseEntity.ok(cartMenus);
+    }
 
     /**
      * 장바구니 항목 추가

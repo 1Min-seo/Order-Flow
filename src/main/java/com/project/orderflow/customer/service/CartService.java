@@ -17,16 +17,34 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class CartService {
+
     private final OrderMenuRepository orderMenuRepository;
     private final TableOrderRepository tableOrderRepository;
     private final MenuRepository menuRepository;
     private final SeatRepository seatRepository;
+
+    /**
+     * 장바구니 목록 조회
+     * 장바구니에 담긴 모든 항목을 반환 / 하나일 때도 리스트 형태로 반환
+     */
+    @Transactional
+    public List<OrderMenuReqDto> getCartMenus(String tableNum) {
+        Seat seat = seatRepository.findByTableNum(tableNum)
+                .orElseThrow(() -> new RuntimeException("Table not found"));
+
+        List<OrderMenu> orderMenus = orderMenuRepository.findByTableOrder_TableAndStatus(seat, OrderStatus.CART);
+
+        return orderMenus.stream()
+                .map(orderMenu -> new OrderMenuReqDto(orderMenu.getMenu().getId(), orderMenu.getMenu().getName(), orderMenu.getQuantity()))
+                .collect(Collectors.toList());
+    }
 
     /**
      * 장바구니 메뉴 추가 - 여러 항목이든 한 항목이든
