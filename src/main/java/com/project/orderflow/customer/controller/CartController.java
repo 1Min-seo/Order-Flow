@@ -41,5 +41,16 @@ public class CartController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
-
+    /**
+     * 장바구니 항목 삭제
+     */
+    @DeleteMapping("/{orderMenuId}")
+    public ResponseEntity<Void> deleteCart(@PathVariable Long orderMenuId) {
+        try {
+            cartService.deleteMenuFromCart(orderMenuId);
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
 }

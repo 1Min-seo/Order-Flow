@@ -92,4 +92,21 @@ public class CartService {
         return orderMenuRepository.save(orderMenu);
     }
 
+    /**
+     * 장바구니 항목 삭제
+     */
+    @Transactional
+    public void deleteMenuFromCart(Long orderMenuId) {
+        // 장바구니 항목 조회
+        OrderMenu orderMenu = orderMenuRepository.findById(orderMenuId)
+                .orElseThrow(() -> new RuntimeException("Cart item not found"));
+
+        // 장바구니 상태인지 확인 후 삭제
+        if (orderMenu.getStatus() == OrderStatus.CART) {
+            orderMenuRepository.delete(orderMenu);
+        } else {
+            throw new RuntimeException("장바구니 메뉴를 삭제할 수 없습니다.");
+        }
+    }
+
 }
