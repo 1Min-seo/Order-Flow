@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface OrderRepository extends JpaRepository<TableOrder, Long> {
+public interface TableOrderRepository extends JpaRepository<TableOrder, Long> {
+    // 특정 테이블의 특정 상태의 모든 주문을 조회
     Optional<TableOrder> findByTableAndStatus(Seat table, OrderStatus status);
 }

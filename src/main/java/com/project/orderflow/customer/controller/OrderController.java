@@ -1,32 +1,30 @@
 package com.project.orderflow.customer.controller;
 
-import com.project.orderflow.customer.dto.OrderReqDto;
+import com.project.orderflow.customer.domain.TableOrder;
+import com.project.orderflow.customer.dto.OrderResDto;
 import com.project.orderflow.customer.service.OrderService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 @RequestMapping("/api/order")
 @RequiredArgsConstructor
+@Tag(name = "Order", description = "Order API")
 public class OrderController {
     private  final OrderService orderService;
 
-    @GetMapping("/table/{orderId}")
-    public ResponseEntity<OrderReqDto> getOrder(@PathVariable Long orderId) {
-        OrderReqDto orderReqDto = orderService.getOrderById(orderId);
-        if (orderReqDto != null) {
-            return ResponseEntity.ok().body(orderReqDto);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-    }
+    @PostMapping
+    public ResponseEntity<OrderResDto> placeOrder(@RequestParam String tableNum) {
+        TableOrder tableOrder = orderService.order(tableNum);
+        OrderResDto response = new OrderResDto(
+                "Order placed successfully",
+                tableOrder.getId(),
+                tableNum,
+                tableOrder.getTotalPrice());
 
-    @PostMapping("/table")
-    public ResponseEntity<?> orderMenu(@RequestBody OrderReqDto orderReqDto){
-        orderService.order(orderReqDto);
-
-        return ResponseEntity.ok().body(orderReqDto);
+        return ResponseEntity.ok(response);
     }
 }
