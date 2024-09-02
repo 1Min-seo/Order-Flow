@@ -17,6 +17,7 @@ spring:
     open-in-view: false
     hibernate:
       ddl-auto: update
+      
   data:
     redis:
       host: localhost
