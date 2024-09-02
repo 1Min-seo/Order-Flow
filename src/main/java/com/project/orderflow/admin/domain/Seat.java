@@ -45,4 +45,11 @@ public class Seat {
         return false;
     }
 
+    public void setTableNumber(String newTableNumber){
+        this.tableNumber=newTableNumber;
+    }
+
+    public void setTableManagement(TableManagement tableManagement){
+        this.tableManagement=tableManagement;
+    }
 }

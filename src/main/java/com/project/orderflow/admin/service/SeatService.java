@@ -5,6 +5,7 @@ import com.project.orderflow.admin.domain.Seat;
 import com.project.orderflow.admin.domain.TableManagement;
 import com.project.orderflow.admin.repository.SeatRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.Table;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -41,5 +42,21 @@ public class SeatService {
     public void deleteSeat(Seat seat){
         seatRepository.delete(seat);
     }
+
+    public void moveSeats(Seat seat, TableManagement newTableManagement, String newTableNumber){
+        TableManagement existingTable =seat.getTableManagement();
+        existingTable.getSeats().remove(seat);
+
+        seat.setTableNumber(newTableNumber);
+        seat.setTableManagement(newTableManagement);
+        newTableManagement.getSeats().add(seat);
+    }
+
+//    public void mergeSeats(Seat seat1, Seat seat2){
+//        TableManagement sourceSeat = seat1.getTableManagement();
+//        TableManagement targetSeat = seat2.getTableManagement();
+//
+//        targetSeat.setTableNumber
+//    }
 }
 
