@@ -35,8 +35,8 @@ public class CartService {
      * 장바구니에 담긴 모든 항목을 반환 / 하나일 때도 리스트 형태로 반환
      */
     @Transactional
-    public List<OrderMenuReqDto> getCartMenus(String tableNum) {
-        Seat seat = seatRepository.findByTableNum(tableNum)
+    public List<OrderMenuReqDto> getCartMenus(String tableNumber) {
+        Seat seat = seatRepository.findByTableNumber(tableNumber)
                 .orElseThrow(() -> new RuntimeException("Table not found"));
 
         List<OrderMenu> orderMenus = orderMenuRepository.findByTableOrder_TableAndStatus(seat, OrderStatus.CART);
@@ -50,9 +50,9 @@ public class CartService {
      * 장바구니 메뉴 추가 - 여러 항목이든 한 항목이든
      */
     @Transactional
-    public void addMenusToCart(String tableNum, List<OrderMenuReqDto> orderMenuReqDtoList) {
+    public void addMenusToCart(String tableNumber, List<OrderMenuReqDto> orderMenuReqDtoList) {
         // 테이블 번호로 Seat 객체 조회
-        Seat seat = seatRepository.findByTableNum(tableNum)
+        Seat seat = seatRepository.findByTableNumber(tableNumber)
                 .orElseThrow(() -> new RuntimeException("Table not found"));
 
         // 테이블 번호에 해당하는 장바구니 주문 조회

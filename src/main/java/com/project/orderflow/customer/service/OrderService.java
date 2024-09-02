@@ -27,8 +27,8 @@ public class OrderService {
      * 주문 생성 메서드
      */
     @Transactional
-    public TableOrder order(String tableNum) {
-        Seat seat = seatRepository.findByTableNum(tableNum)
+    public TableOrder order(String tableNumber) {
+        Seat seat = seatRepository.findByTableNumber(tableNumber)
                 .orElseThrow(() -> new RuntimeException("Table not found"));
 
         TableOrder tableOrder = tableOrderRepository.findByTableAndStatus(seat, OrderStatus.CART)
@@ -55,8 +55,8 @@ public class OrderService {
     /**
      * 테이블 별 주문 내역 조회
      */
-    public List<TableOrderReqDto> getOrdersByTable(String tableNum) {
-        Seat seat = seatRepository.findByTableNum(tableNum)
+    public List<TableOrderReqDto> getOrdersByTable(String tableNumber) {
+        Seat seat = seatRepository.findByTableNumber(tableNumber)
                 .orElseThrow(() -> new RuntimeException("Table not found"));
 
         List<TableOrder> tableOrders = tableOrderRepository.findByTable(seat);

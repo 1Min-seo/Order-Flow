@@ -19,19 +19,19 @@ public class OrderController {
     private  final OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<OrderResDto> placeOrder(@RequestParam String tableNum) {
-        TableOrder tableOrder = orderService.order(tableNum);
+    public ResponseEntity<OrderResDto> placeOrder(@RequestParam String tableNumber) {
+        TableOrder tableOrder = orderService.order(tableNumber);
         OrderResDto response = new OrderResDto(
                 "Order placed successfully",
                 tableOrder.getId(),
-                tableNum,
+                tableNumber,
                 tableOrder.getTotalPrice());
 
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/table/{tableNum}")
-    public List<TableOrderReqDto> getOrdersByTable(@PathVariable String tableNum) {
-        return orderService.getOrdersByTable(tableNum);
+    @GetMapping("/table/{tableNumber}")
+    public List<TableOrderReqDto> getOrdersByTable(@PathVariable String tableNumber) {
+        return orderService.getOrdersByTable(tableNumber);
     }
 }

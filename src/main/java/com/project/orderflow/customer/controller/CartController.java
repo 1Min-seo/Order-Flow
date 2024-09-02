@@ -23,8 +23,8 @@ public class CartController {
      * 장바구니 조회
      */
     @GetMapping
-    public ResponseEntity<List<OrderMenuReqDto>> getCartMenus(@RequestParam String tableNum) {
-        List<OrderMenuReqDto> cartMenus = cartService.getCartMenus(tableNum);
+    public ResponseEntity<List<OrderMenuReqDto>> getCartMenus(@RequestParam String tableNumber) {
+        List<OrderMenuReqDto> cartMenus = cartService.getCartMenus(tableNumber);
         return ResponseEntity.ok(cartMenus);
     }
 
@@ -32,8 +32,8 @@ public class CartController {
      * 장바구니 항목 추가
      */
     @PostMapping
-    public ResponseEntity<?> addItemToCart(@RequestParam String tableNum, @RequestBody List<OrderMenuReqDto> orderMenuReqDto) {
-        cartService.addMenusToCart(tableNum, orderMenuReqDto);
+    public ResponseEntity<?> addItemToCart(@RequestParam String tableNumber, @RequestBody List<OrderMenuReqDto> orderMenuReqDto) {
+        cartService.addMenusToCart(tableNumber, orderMenuReqDto);
         return ResponseEntity.ok().build();
     }
 
