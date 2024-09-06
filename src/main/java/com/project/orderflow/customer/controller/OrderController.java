@@ -27,6 +27,7 @@ public class OrderController {
     private final OptionService optionService;
 
     @PostMapping
+    @Operation(summary = "메뉴 주문", description = "테이블 번호에 해당하는 장바구니를 주문으로 전환하였습니다.")
     public ResponseEntity<OrderResDto> placeOrder(@RequestParam String tableNumber) {
         TableOrder tableOrder = orderService.order(tableNumber);
         OrderResDto response = new OrderResDto(
@@ -39,6 +40,7 @@ public class OrderController {
     }
 
     @GetMapping("/table/{tableNumber}")
+    @Operation(summary = "테이블 주문 조회", description = "테이블 번호로 주문을 조회합니다.")
     public List<TableOrderReqDto> getOrdersByTable(@PathVariable String tableNumber) {
         return orderService.getOrdersByTable(tableNumber);
     }
@@ -51,6 +53,7 @@ public class OrderController {
     }
 
     @PostMapping("/option")
+    @Operation(summary = "옵션 주문", description = "해당하는 옵션을 주문합니다.")
     public ResponseEntity<Void> orderOptions(@RequestBody OptionOrderReqDto optionOrderReqDto) {
         // 테이블 번호 확인
         String tableNum = optionOrderReqDto.getTableNumber();
