@@ -19,12 +19,17 @@ public class TableManagementRestController {
     private final TableManagementService tableManagementService;
 
      
-    @PostMapping("/setup/{ownerId}")
+    @PostMapping("/setUp/{ownerId}")
     public ResponseEntity<?> tableManage(@PathVariable(name="ownerId") Long ownerId, @RequestBody TableSetUpDto tableSetUpDto){
         Owner owner = ownerService.findOwnerById(ownerId);
+        log.info("점주: " + owner.getId());
+        log.info("지정 좌석 개수: " + tableSetUpDto.getNumberOfSeats());
+
         tableManagementService.setUpTables(owner, tableSetUpDto.getNumberOfSeats());
 
+        log.info("성공1");
         log.info(String.format("테이블 %d개 셋업 완료", tableSetUpDto.getNumberOfSeats()));
+        log.info("성공2");
         return ResponseEntity.ok("ok");
     }
 

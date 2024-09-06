@@ -22,15 +22,13 @@ public class TableManagement {
     @Column(nullable = false)
     private int numberOfSeats;
 
-    @OneToMany(mappedBy = "tableManagement", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "tableManagement", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Seat> seats=new ArrayList<>();
 
     @OneToOne
     @JoinColumn(name="owner_id", nullable = false)
     private Owner owner;
 
-    @OneToMany(mappedBy = "tableManagement", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Food> foods=new ArrayList<>();
 
     @Builder
     public TableManagement(Owner owner, int numberOfSeats) {

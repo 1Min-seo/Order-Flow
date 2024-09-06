@@ -30,6 +30,9 @@ public class Owner {
     @OneToOne(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private TableManagement tableManagement;
 
+    @OneToOne(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    private FoodManagement foodManagement;
+
 
     @Builder
     public Owner(String email, String name, String passwordHash, String businessNumber) {

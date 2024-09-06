@@ -18,6 +18,7 @@ public class TableManagementService {
 
     private final TableManagementRepository tableManagementRepository;
     private final SeatService seatService;
+    private final FoodManagementService foodManagementService;
 
     public TableManagement setUpTables(Owner owner, int numberOfSeats) {
         TableManagement tableManagement = TableManagement.builder()
@@ -25,8 +26,8 @@ public class TableManagementService {
                 .numberOfSeats(numberOfSeats)
                 .build();
 
-        addSeatsToTableManagement(tableManagement, numberOfSeats);
         tableManagement = tableManagementRepository.save(tableManagement);
+        addSeatsToTableManagement(tableManagement, numberOfSeats);
 
         return tableManagement;
     }
