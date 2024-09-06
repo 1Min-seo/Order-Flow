@@ -60,12 +60,11 @@ public class OrderController {
         log.info("주문한 테이블 번호: {}", tableNum);
 
         // 옵션 주문 처리
-        optionOrderReqDto.getOptionOrders().forEach(optionOrder -> {
-            log.info("Option ID = {}, Quantity = {}, Table Number = {}",
-                    optionOrder.getOptionId(),
-                    optionOrder.getQuantity(),
-                    tableNum);
-        });
+        optionOrderReqDto.getOptionOrders().forEach(optionOrder ->
+                log.info("Option ID = {}, Quantity = {}, Table Number = {}",
+                optionOrder.getOptionId(),
+                optionOrder.getQuantity(),
+                tableNum));
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

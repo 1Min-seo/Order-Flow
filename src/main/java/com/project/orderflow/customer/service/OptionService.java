@@ -18,11 +18,4 @@ public class OptionService {
     public List<OptionMenu> getAllOptions(){
         return optionRepository.findAll();
     }
-/*
-    public Option validateOption(Long optionId) {
-        return optionRepository.findById(optionId)
-                .orElseThrow(() -> new IllegalArgumentException("옵션이 존재하지 않습니다."));
-    }
-
- */
 }
