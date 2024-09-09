@@ -1,9 +1,7 @@
 package com.project.orderflow.admin.service;
 
-import com.project.orderflow.admin.domain.Category;
-import com.project.orderflow.admin.domain.CategoryType;
-import com.project.orderflow.admin.domain.FoodManagement;
-import com.project.orderflow.admin.domain.Owner;
+import com.project.orderflow.admin.domain.*;
+import com.project.orderflow.admin.dto.FoodRegistDto;
 import com.project.orderflow.admin.repository.FoodManagementRepository;
 import com.project.orderflow.admin.repository.FoodRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,18 +16,24 @@ public class FoodManagementService {
     private final FoodManagementRepository foodManagementRepository;
     private final OwnerService ownerService;
 
-    public FoodManagement saveFoodManagement(Owner owner, CategoryType categoryType) {
-        FoodManagement foodManagement=FoodManagement.builder().build();
-        Category getCategory= categoryService.findByCategoryType(categoryType);
-        //FoodManagement foodManagement=new FoodManagement();
-        foodManagement.setCategory(getCategory);
+    public Food saveFood(Owner owner, FoodRegistDto foodRegistDto) {
+        FoodManagement existingFoodManagement = foodManagementRepository.findByOwner(owner);
 
+        if (existingFoodManagement == null) {
+            existingFoodManagement = FoodManagement.builder()
+                    .owner(owner)
+                    .build();
+            foodManagementRepository.save(existingFoodManagement);
+        }
 
-        return foodManagementRepository.save(foodManagement);
+        Food food = Food.builder()
+                .name(foodRegistDto.getName())
+                .description(foodRegistDto.getDescription())
+                .price(foodRegistDto.getPrice())
+                .foodManagement(existingFoodManagement)
+                .build();
+
+        return foodRepository.save(food);
     }
-
-
-
-
 
 }
