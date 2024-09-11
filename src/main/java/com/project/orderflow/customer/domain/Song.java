@@ -36,4 +36,11 @@ public class Song {
         this.status = status;
         this.requestedAt = requestedAt;
     }
+
+    public void changeStatus(SongStatus newStatus) {
+        if (newStatus == null) {
+            throw new IllegalArgumentException("상태는 비어있을 수 없습니다.");
+        }
+        this.status = newStatus;
+    }
 }
