@@ -1,10 +1,13 @@
 package com.project.orderflow.admin.service;
 
 import com.project.orderflow.admin.domain.Owner;
+import com.project.orderflow.admin.dto.InfoUpdateDto;
 import com.project.orderflow.admin.dto.LoginDto;
 import com.project.orderflow.admin.dto.SignUpDto;
 import com.project.orderflow.admin.repository.OwnerRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,6 +17,8 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
+@Transactional
 public class OwnerService {
     private final OwnerRepository ownerRepository;
     private final PasswordEncoder passwordEncoder;
@@ -52,5 +57,18 @@ public class OwnerService {
         }
 
         return false;
+    }
+
+    public void updateOwnerInfo(Long ownerId, InfoUpdateDto infoUpdateDto){
+        Owner owner=ownerRepository.findById(ownerId).orElse(null);
+        if(infoUpdateDto.getBusinessNumber()!=null){
+            owner.setBusinessNumber(infoUpdateDto.getBusinessNumber());
+        }
+
+        if(infoUpdateDto.getNewPassword()!=null && infoUpdateDto.getNewPassword().equals(infoUpdateDto.getNewPasswordConfirm())){
+            owner.setPasswordHash(infoUpdateDto.getNewPassword());
+        }
+
+        ownerRepository.save(owner);
     }
 }

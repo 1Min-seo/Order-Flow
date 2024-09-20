@@ -19,21 +19,18 @@ public class TableManagementRestController {
     private final TableManagementService tableManagementService;
 
      
-    @PostMapping("/setUp/{ownerId}")
+    @PostMapping("/{ownerId}/setUp")
     public ResponseEntity<?> tableManage(@PathVariable(name="ownerId") Long ownerId, @RequestBody TableSetUpDto tableSetUpDto){
         Owner owner = ownerService.findOwnerById(ownerId);
         log.info("점주: " + owner.getId());
         log.info("지정 좌석 개수: " + tableSetUpDto.getNumberOfSeats());
 
         tableManagementService.setUpTables(owner, tableSetUpDto.getNumberOfSeats());
-
-        log.info("성공1");
         log.info(String.format("테이블 %d개 셋업 완료", tableSetUpDto.getNumberOfSeats()));
-        log.info("성공2");
         return ResponseEntity.ok("ok");
     }
 
-    @PostMapping("/addSeats/{ownerId}")
+    @PostMapping("/{ownerId}/addSeats")
     public ResponseEntity<?> addSeats(@PathVariable(name="ownerId") Long ownerId, @RequestParam int seatsToAdd){
         Owner owner=ownerService.findOwnerById(ownerId);
         tableManagementService.addSeats(owner, seatsToAdd);
@@ -42,7 +39,7 @@ public class TableManagementRestController {
         return ResponseEntity.ok("좌석 추가 완료");
     }
 
-    @PostMapping("/removeSeats/{ownerId}")
+    @PostMapping("/{ownerId}/removeSeats")
     public ResponseEntity<?> removeSeats(@PathVariable(name="ownerId") Long ownerId, @RequestParam int seatsToRemove){
         Owner owner=ownerService.findOwnerById(ownerId);
         tableManagementService.deleteSeats(owner, seatsToRemove);

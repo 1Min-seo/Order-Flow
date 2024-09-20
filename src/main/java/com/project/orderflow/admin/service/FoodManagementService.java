@@ -7,33 +7,20 @@ import com.project.orderflow.admin.repository.FoodRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
 public class FoodManagementService {
-    private final FoodRepository foodRepository;
-    private final CategoryService categoryService;
     private final FoodManagementRepository foodManagementRepository;
-    private final OwnerService ownerService;
 
-    public Food saveFood(Owner owner, FoodRegistDto foodRegistDto) {
-        FoodManagement existingFoodManagement = foodManagementRepository.findByOwner(owner);
-
-        if (existingFoodManagement == null) {
-            existingFoodManagement = FoodManagement.builder()
-                    .owner(owner)
-                    .build();
-            foodManagementRepository.save(existingFoodManagement);
-        }
-
-        Food food = Food.builder()
-                .name(foodRegistDto.getName())
-                .description(foodRegistDto.getDescription())
-                .price(foodRegistDto.getPrice())
-                .foodManagement(existingFoodManagement)
-                .build();
-
-        return foodRepository.save(food);
+    public List<Food> getFoodsCategory(Category category){
+        List<FoodManagement> foodManagement = foodManagementRepository.findByCategory(category);
+        return foodManagement.stream()
+                .flatMap(fm->fm.getFoods().stream())
+                .collect(Collectors.toList());
     }
 
 }

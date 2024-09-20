@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-    Category findByType(CategoryType categoryType);
+    Category findByCategoryType(CategoryType categorytype);
 }

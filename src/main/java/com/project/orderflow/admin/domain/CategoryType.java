@@ -1,20 +1,18 @@
 package com.project.orderflow.admin.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public enum CategoryType {
     BEST("BEST"),
     SIGNATURE("SIGNATURE"),
     MAIN("MAIN"),
     SIDE("SIDE"),
-    DRINK("DRINK"),;
+    DRINK("DRINK")
+    ;
 
+    private final String name;
 
-    private final String displayName;
-
-    CategoryType(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
 }
