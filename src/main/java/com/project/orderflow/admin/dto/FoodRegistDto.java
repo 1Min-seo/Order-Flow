@@ -1,7 +1,6 @@
 package com.project.orderflow.admin.dto;
 
 import com.project.orderflow.admin.domain.Category;
-import com.project.orderflow.admin.domain.CategoryType;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -20,6 +19,6 @@ public class FoodRegistDto {
     private Integer price;
 
     @NotNull
-    private CategoryType categoryType;
+    private String categoryName;
 
 }

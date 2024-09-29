@@ -19,7 +19,7 @@ public class FoodManagementRestController {
     private final FoodService foodService;
     private final OwnerService ownerService;
 
-    @PostMapping("/{ownerId}/register")
+    @PostMapping("/{ownerId}/foodRegister")
     public ResponseEntity<?> registFood(@RequestBody FoodRegistDto foodRegistDto, @PathVariable Long ownerId) {
         try {
             Owner owner = ownerService.findOwnerById(ownerId);
@@ -40,9 +40,9 @@ public class FoodManagementRestController {
 
     @PostMapping("{ownerId}/update/{foodId}")
     public ResponseEntity<?> updateFood(@PathVariable Long ownerId, @PathVariable Long foodId, @RequestBody FoodUpdateDto foodUpdateDto) {
-        Owner owner= ownerService.findOwnerById(ownerId);
+        //Owner owner= ownerService.findOwnerById(ownerId);
 
-        foodService.updateFood(owner,foodId,foodUpdateDto);
+        foodService.updateFood(ownerId,foodId,foodUpdateDto);
 
         return ResponseEntity.ok("음식 수정 성공");
     }
@@ -50,7 +50,7 @@ public class FoodManagementRestController {
     @DeleteMapping("/{ownerId}/delete/{foodId}")
     public ResponseEntity<?> deleteFood(@PathVariable Long ownerId, @PathVariable Long foodId) {
         Owner owner= ownerService.findOwnerById(ownerId);
-        foodService.deleteFood(owner,foodId);
+        foodService.deleteFood(ownerId,foodId);
 
         return ResponseEntity.ok("음식 삭제 성공");
     }

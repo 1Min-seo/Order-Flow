@@ -53,6 +53,7 @@ public class OwnerService {
         }
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         if (passwordEncoder.matches(loginDto.getPassword(), findOwner.getPasswordHash())) {
+            findOwner.setIsActive(true);
             return true;
         }
 
@@ -65,8 +66,10 @@ public class OwnerService {
             owner.setBusinessNumber(infoUpdateDto.getBusinessNumber());
         }
 
-        if(infoUpdateDto.getNewPassword()!=null && infoUpdateDto.getNewPassword().equals(infoUpdateDto.getNewPasswordConfirm())){
-            owner.setPasswordHash(infoUpdateDto.getNewPassword());
+        String encodedPassword = passwordEncoder.encode(infoUpdateDto.getNewPassword());
+
+        if(infoUpdateDto.getNewPassword().equals(infoUpdateDto.getNewPasswordConfirm())){
+            owner.setPasswordHash(encodedPassword);
         }
 
         ownerRepository.save(owner);

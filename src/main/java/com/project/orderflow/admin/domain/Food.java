@@ -27,24 +27,20 @@ public class Food {
     @Min(0)
     private Integer price;
 
-    @ManyToOne
-    @JoinColumn(name="food_management_id", nullable=false)
-    private FoodManagement foodManagement;
-
+//    @ManyToOne
+//    @JoinColumn(name="food_management_id", nullable=false)
+//    private FoodManagement foodManagement;
 
     @ManyToOne
     @JoinColumn(name="category_id", nullable=false)
     private Category category;
 
-    @Column(name = "is_active", nullable = false)
-    private boolean isActive = true;
-
     @Builder
-    public Food(String name, String description, int price, FoodManagement foodManagement, Category category) {
+    public Food(String name, String description, int price, Category category) {
         this.name = name;
         this.description = description;
         this.price = price;
-        this.foodManagement = foodManagement;
+        //this.foodManagement = foodManagement;
         this.category = category;
     }
 }
