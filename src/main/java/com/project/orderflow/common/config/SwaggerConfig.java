@@ -1,10 +1,11 @@
 package com.project.orderflow.common.config;
 
+import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.Components;
-import io.swagger.v3.oas.models.OpenAPI;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 
 @Configuration
 public class SwaggerConfig {
@@ -22,4 +23,13 @@ public class SwaggerConfig {
                 .description("orderFlow REST API")
                 .version("1.0.0");
     }
+
+//    @Bean
+//    public GroupedOpenApi apiGroup(){
+//        return GroupedOpenApi.builder()
+//                .group("OrderFlow API")
+//                .pathsToMatch("/**") // 모든 경로 포함
+//                .build();
+//    }
+
 }

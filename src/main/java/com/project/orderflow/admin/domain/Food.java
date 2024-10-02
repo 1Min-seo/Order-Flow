@@ -21,6 +21,8 @@ public class Food {
     @NotBlank(message = "음식의 이름을 작성 해주세요")
     private String name;
 
+    private String imageUrl;
+
     private String description;
 
     @NotNull
@@ -36,11 +38,13 @@ public class Food {
     private Category category;
 
     @Builder
-    public Food(String name, String description, int price, Category category) {
+    public Food(String name, String description, int price, String imageUrl, Category category) {
         this.name = name;
         this.description = description;
         this.price = price;
+        this.imageUrl = imageUrl;
         //this.foodManagement = foodManagement;
         this.category = category;
     }
+
 }

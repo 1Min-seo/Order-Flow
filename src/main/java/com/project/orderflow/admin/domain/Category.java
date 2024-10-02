@@ -25,7 +25,6 @@ public class Category {
         this.name = name;
     }
 
-    // 카테고리 이름 유효성 검사
     public static boolean isValidCategoryName(String categoryName, List<String> allowedCategories) {
         return allowedCategories.contains(categoryName);
     }

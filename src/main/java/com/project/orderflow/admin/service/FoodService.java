@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -26,34 +27,31 @@ public class FoodService {
     //private final FoodManagementRepository foodManagementRepository;
     private final CategoryRepository categoryRepository;
     private final OwnerRepository ownerRepository;
+    private final S3Service s3Service;
 
-    public Food saveFood(Owner owner, FoodRegistDto foodRegistDto) {
+    public Food saveFood(Owner owner, FoodRegistDto foodRegistDto) throws IOException {
         String categoryName = foodRegistDto.getCategoryName();
-        log.info("카테고리 이름: " + categoryName);
-
-        List<Category> allCategories = categoryRepository.findAll();
-        List<String> allowedCategories = allCategories.stream().map(Category::getName).toList();
-
-        if (!Category.isValidCategoryName(categoryName, allowedCategories)) {
-            throw new IllegalArgumentException("유효하지 않은 카테고리입니다: " + categoryName);
-        }
 
         Category category = categoryRepository.findByName(categoryName)
                 .orElseThrow(() -> new IllegalArgumentException("카테고리를 찾을 수 없습니다: " + categoryName));
 
+        String fileName = "uploads/" + foodRegistDto.getImage().getOriginalFilename();
+        s3Service.uploadFile(foodRegistDto.getImage().getInputStream(), fileName);
+
+        String imageUrl = "https://orderflow-bk.s3.amazonaws.com/" + fileName;
+
         Food food = Food.builder()
                 .name(foodRegistDto.getName())
+                .imageUrl(imageUrl)  // S3 이미지 URL 설정
                 .description(foodRegistDto.getDescription())
                 .price(foodRegistDto.getPrice())
                 .category(category)
                 .build();
 
-        log.info(foodRegistDto.getName() + " 의 카테고리: " + categoryName);
         return foodRepository.save(food);
     }
 
-
-    public Food updateFood(Long ownerId, Long foodId, FoodUpdateDto foodUpdateDto) {
+    public void updateFood(Long ownerId, Long foodId, FoodUpdateDto foodUpdateDto) {
         Owner findOwner = ownerRepository.findById(ownerId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 점주를 찾을 수 없습니다."));
 
@@ -63,8 +61,9 @@ public class FoodService {
         selectUpdateFood.setName(foodUpdateDto.getName());
         selectUpdateFood.setDescription(foodUpdateDto.getDescription());
         selectUpdateFood.setPrice(foodUpdateDto.getPrice());
+        //selectUpdateFood.setCategoryName(foodUpdateDto.getCategoryName());
 
-        return foodRepository.save(selectUpdateFood);
+        //return foodRepository.save(selectUpdateFood);
     }
 
     public void deleteFood(Long ownerId, Long foodId){
@@ -72,5 +71,8 @@ public class FoodService {
         Owner findOwner = ownerRepository.findById(ownerId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 점주를 찾을 수 없습니다."));
         foodRepository.deleteById(foodId);
+    }
+
+    public void updateFood(Food existingFood) {
     }
 }

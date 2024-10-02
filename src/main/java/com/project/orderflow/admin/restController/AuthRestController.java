@@ -5,7 +5,7 @@ import com.project.orderflow.admin.dto.*;
 import com.project.orderflow.admin.repository.OwnerRepository;
 import com.project.orderflow.admin.service.MailSendService;
 import com.project.orderflow.admin.service.OwnerService;
-import io.swagger.v3.oas.annotations.Operation;
+//import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController;
