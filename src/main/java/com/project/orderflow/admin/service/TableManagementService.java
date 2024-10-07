@@ -25,32 +25,32 @@ public class TableManagementService {
     private final OwnerRepository ownerRepository;
     //private final FoodManagementService foodManagementService;
 
-    public Optional<TableManagement> setUpTables(Owner owner, int numberOfSeats) {
-//        Owner findOwner = ownerRepository.findById(owner.getId()).orElseThrow();
-//        if(findOwner.getIsActive()){
-//            TableManagement tableManagement = TableManagement.builder()
-//                    .owner(owner)
-//                    .numberOfSeats(numberOfSeats)
-//                    .build();
-//
-//            tableManagement = tableManagementRepository.save(tableManagement);
-//            addSeatsToTableManagement(tableManagement, numberOfSeats);
-//
-//            return tableManagement;
-//        }
-//        return null;
-        return ownerRepository.findById(owner.getId())
-                .filter(Owner::getIsActive)
-                .map(findOwner->{
-                    TableManagement tableManagement=TableManagement.builder()
-                            .owner(findOwner)
-                            .numberOfSeats(numberOfSeats)
-                            .build();
+    public TableManagement setUpTables(Owner owner, int numberOfSeats) {
+        Owner findOwner = ownerRepository.findById(owner.getId()).orElseThrow();
+        if(findOwner!=null){
+            TableManagement tableManagement = TableManagement.builder()
+                    .owner(owner)
+                    .numberOfSeats(numberOfSeats)
+                    .build();
 
-                    tableManagement=tableManagementRepository.save(tableManagement);
-                    addSeatsToTableManagement(tableManagement, numberOfSeats);
-                    return tableManagement;
-                });
+            tableManagement = tableManagementRepository.save(tableManagement);
+            addSeatsToTableManagement(tableManagement, numberOfSeats);
+
+            return tableManagement;
+        }
+        return null;
+//        return ownerRepository.findById(owner.getId())
+//                .filter(Owner::getIsActive)
+//                .map(findOwner->{
+//                    TableManagement tableManagement=TableManagement.builder()
+//                            .owner(findOwner)
+//                            .numberOfSeats(numberOfSeats)
+//                            .build();
+//
+//                    tableManagement=tableManagementRepository.save(tableManagement);
+//                    addSeatsToTableManagement(tableManagement, numberOfSeats);
+//                    return tableManagement;
+//                });
     }
 
     private void addSeatsToTableManagement(TableManagement tableManagement, int numberOfSeats) {
