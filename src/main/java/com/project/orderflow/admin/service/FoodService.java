@@ -35,7 +35,7 @@ public class FoodService {
         Category category = categoryRepository.findByName(categoryName)
                 .orElseThrow(() -> new IllegalArgumentException("카테고리를 찾을 수 없습니다: " + categoryName));
 
-        String fileName = "uploads/" + foodRegistDto.getImage().getOriginalFilename();
+        String fileName = foodRegistDto.getImage().getOriginalFilename();
         s3Service.uploadFile(foodRegistDto.getImage().getInputStream(), fileName);
 
         String imageUrl = "https://orderflow-bk.s3.amazonaws.com/" + fileName;
@@ -51,9 +51,9 @@ public class FoodService {
         return foodRepository.save(food);
     }
 
-    public void updateFood(Long ownerId, Long foodId, FoodUpdateDto foodUpdateDto) {
-        Owner findOwner = ownerRepository.findById(ownerId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 점주를 찾을 수 없습니다."));
+    public void updateFood(Long ownerId, Long foodId, FoodUpdateDto foodUpdateDto) throws IOException {
+//        Owner findOwner = ownerRepository.findById(ownerId)
+//                .orElseThrow(() -> new IllegalArgumentException("해당 점주를 찾을 수 없습니다."));
 
         Food selectUpdateFood= foodRepository.findById(foodId)
                 .orElseThrow(()-> new IllegalArgumentException("해당 음식이 존재하지 않습니다."));
@@ -61,9 +61,16 @@ public class FoodService {
         selectUpdateFood.setName(foodUpdateDto.getName());
         selectUpdateFood.setDescription(foodUpdateDto.getDescription());
         selectUpdateFood.setPrice(foodUpdateDto.getPrice());
-        //selectUpdateFood.setCategoryName(foodUpdateDto.getCategoryName());
+        //selectUpdateFood.setCategory(foodUpdateDto.getCategoryName());
+        String deleteImageFile=selectUpdateFood.getImageUrl();
+        s3Service.deleteFile(deleteImageFile);
 
-        //return foodRepository.save(selectUpdateFood);
+        String fileName = foodUpdateDto.getImage().getOriginalFilename();
+        s3Service.uploadFile(foodUpdateDto.getImage().getInputStream(), fileName);
+
+        String imageUrl = "https://orderflow-bk.s3.amazonaws.com/" + fileName;
+        selectUpdateFood.setImageUrl(imageUrl);
+
     }
 
     public void deleteFood(Long ownerId, Long foodId){

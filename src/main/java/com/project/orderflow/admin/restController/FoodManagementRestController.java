@@ -41,9 +41,6 @@ public class FoodManagementRestController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 점주를 찾을 수 없습니다.");
             }
 
-            // S3에 이미지 업로드
-            String imageUrl = s3Service.uploadFile(foodRegistDto.getImage().getInputStream(), foodRegistDto.getImage().getOriginalFilename());
-
             foodService.saveFood(owner, foodRegistDto);
 
             return ResponseEntity.ok("음식 등록 성공!");
@@ -53,51 +50,29 @@ public class FoodManagementRestController {
         }
     }
 
-//    @PostMapping(value = "{ownerId}/update/{foodId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<?> updateFood(@PathVariable Long ownerId, @PathVariable Long foodId, @ModelAttribute FoodUpdateDto foodUpdateDto) {
-//        try {
-//
-//            Owner owner = ownerService.findOwnerById(ownerId);
-//            if (owner == null) {
-//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 점주를 찾을 수 없습니다.");
-//            }
+    @PostMapping(value = "{ownerId}/update/{foodId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateFood(@PathVariable Long ownerId, @PathVariable Long foodId, @ModelAttribute FoodUpdateDto foodUpdateDto) {
+        try {
 
-//            Optional<Food> foodOptional = foodRepository.findById(foodId);
-//            if (foodOptional.isEmpty()) {
-//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 음식을 찾을 수 없습니다.");
-//            }
-//            Food existingFood = foodOptional.get();
-//
-//            // 기존 이미지가 있을 경우 S3에서 삭제
-//            if (existingFood.getImageUrl() != null) {
-//                s3Service.deleteFile(existingFood.getImageUrl());
-//            }
-//
-//
-//            MultipartFile newImage = foodUpdateDto.getImage();
-//            String newImageUrl = null;
-//            if (newImage != null && !newImage.isEmpty()) {
-//                newImageUrl = s3Service.uploadFile(newImage.getInputStream(), newImage.getOriginalFilename());
-//            }
-//
-//            existingFood.setName(foodUpdateDto.getName());
-//            existingFood.setDescription(foodUpdateDto.getDescription());
-//            existingFood.setPrice(foodUpdateDto.getPrice());
-//            existingFood.setCategoryName(foodUpdateDto.getCategoryName());
-//            if (newImageUrl != null) {
-//                existingFood.setImageUrl(newImageUrl); // 새 이미지 URL
-//            }
-//
-//
-//            foodService.updateFood(existingFood);
-//
-//            return ResponseEntity.ok("음식 수정 성공");
-//
-//        } catch (Exception e) {
-//            log.error(e.getMessage());
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("음식 수정 중 오류가 발생했습니다.");
-//        }
-//    }
+            Owner owner = ownerService.findOwnerById(ownerId);
+            if (owner == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 점주를 찾을 수 없습니다.");
+            }
+
+            Optional<Food> foodOptional = foodRepository.findById(foodId);
+            if (foodOptional.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 음식을 찾을 수 없습니다.");
+            }
+
+            foodService.updateFood(owner.getId(), foodId, foodUpdateDto);
+
+            return ResponseEntity.ok("음식 수정 성공");
+
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("음식 수정 중 오류가 발생했습니다.");
+        }
+    }
 
 
     @DeleteMapping("/{ownerId}/delete/{foodId}")
