@@ -3,12 +3,17 @@ package com.project.orderflow.admin.service;
 import com.project.orderflow.admin.domain.Owner;
 import com.project.orderflow.admin.domain.Seat;
 import com.project.orderflow.admin.domain.TableManagement;
+import com.project.orderflow.admin.repository.OwnerRepository;
 import com.project.orderflow.admin.repository.TableManagementRepository;
+import jakarta.persistence.Table;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -18,27 +23,50 @@ public class TableManagementService {
 
     private final TableManagementRepository tableManagementRepository;
     private final SeatService seatService;
+    private final OwnerRepository ownerRepository;
+    //private final FoodManagementService foodManagementService;
+
+    @Value("${qr.code.api}")
+    private String qrCodeApiUrl;
 
     public TableManagement setUpTables(Owner owner, int numberOfSeats) {
-        TableManagement tableManagement = TableManagement.builder()
-                .owner(owner)
-                .numberOfSeats(numberOfSeats)
-                .build();
+        Owner findOwner = ownerRepository.findById(owner.getId()).orElseThrow();
+        if(findOwner!=null){
+            TableManagement tableManagement = TableManagement.builder()
+                    .owner(owner)
+                    .numberOfSeats(numberOfSeats)
+                    .build();
 
-        addSeatsToTableManagement(tableManagement, numberOfSeats);
-        tableManagement = tableManagementRepository.save(tableManagement);
+            tableManagement = tableManagementRepository.save(tableManagement);
+            addSeatsToTableManagement(tableManagement, numberOfSeats);
 
-        return tableManagement;
+            return tableManagement;
+        }
+        return null;
+//        return ownerRepository.findById(owner.getId())
+//                .filter(Owner::getIsActive)
+//                .map(findOwner->{
+//                    TableManagement tableManagement=TableManagement.builder()
+//                            .owner(findOwner)
+//                            .numberOfSeats(numberOfSeats)
+//                            .build();
+//
+//                    tableManagement=tableManagementRepository.save(tableManagement);
+//                    addSeatsToTableManagement(tableManagement, numberOfSeats);
+//                    return tableManagement;
+//                });
     }
 
     private void addSeatsToTableManagement(TableManagement tableManagement, int numberOfSeats) {
         int currentSeats=tableManagement.getSeats().size();
         for (int i = currentSeats; i < currentSeats+numberOfSeats; i++) {
+            String authcode = generateSeatCode();
             Seat seat = Seat.builder()
                     .tableNumber(String.valueOf(i + 1))
-                    .authCode(generateSeatCode())
+                    .authCode(authcode)
                     .tableManagement(tableManagement)
                     .isActive(false)
+                    .qrUrl(qrCodeApiUrl + authcode)
                     .build();
             seatService.saveSeat(seat);
             tableManagement.getSeats().add(seat);

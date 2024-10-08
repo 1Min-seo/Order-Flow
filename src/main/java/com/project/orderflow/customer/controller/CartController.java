@@ -25,8 +25,8 @@ public class CartController {
      */
     @GetMapping
     @Operation(summary = "장바구니 메뉴 조회", description = "테이블 번호에 해당하는 장바구니를 조회합니다.")
-    public ResponseEntity<List<OrderMenuReqDto>> getCartMenus(@RequestParam String tableNumber) {
-        List<OrderMenuReqDto> cartMenus = cartService.getCartMenus(tableNumber);
+    public ResponseEntity<List<OrderMenuReqDto>> getCartMenus(@RequestParam String tableNumber, @RequestParam String authCode) {
+        List<OrderMenuReqDto> cartMenus = cartService.getCartMenus(tableNumber, authCode);
         return ResponseEntity.ok(cartMenus);
     }
 
@@ -35,8 +35,8 @@ public class CartController {
      */
     @PostMapping
     @Operation(summary = "장바구니에 메뉴 추가", description = "테이블 번호와 함께 장바구니에 메뉴를 추가합니다.")
-    public ResponseEntity<?> addItemToCart(@RequestParam String tableNumber, @RequestBody List<OrderMenuReqDto> orderMenuReqDto) {
-        cartService.addMenusToCart(tableNumber, orderMenuReqDto);
+    public ResponseEntity<?> addItemToCart(@RequestParam String tableNumber, @RequestParam String authCode, @RequestBody List<OrderMenuReqDto> orderMenuReqDto) {
+        cartService.addMenusToCart(tableNumber, authCode, orderMenuReqDto);
         return ResponseEntity.ok().build();
     }
 
@@ -54,6 +54,7 @@ public class CartController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
+
     /**
      * 장바구니 항목 삭제
      */

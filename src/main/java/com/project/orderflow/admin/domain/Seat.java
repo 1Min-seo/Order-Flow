@@ -25,16 +25,20 @@ public class Seat {
     @Column(nullable = false)
     private boolean isActive;
 
+    @Column(nullable = false)
+    private String qrUrl;
+
     @ManyToOne
     @JoinColumn(name="table_management_id", nullable = false)
     private TableManagement tableManagement;
 
     @Builder
-    public Seat(String tableNumber, String authCode, TableManagement tableManagement, Boolean isActive){
+    public Seat(String tableNumber, String authCode, TableManagement tableManagement, Boolean isActive, String qrUrl){
         this.tableNumber=tableNumber;
         this.authCode=authCode;
         this.tableManagement=tableManagement;
         this.isActive=isActive;
+        this.qrUrl=qrUrl;
     }
 
     public Boolean activateSeat(String authCode){

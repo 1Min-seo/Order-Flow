@@ -27,8 +27,8 @@ public class OrderService {
      * 주문 생성 메서드
      */
     @Transactional
-    public TableOrder order(String tableNumber) {
-        Seat seat = seatRepository.findByTableNumber(tableNumber)
+    public TableOrder order(String tableNumber, String authCode) {
+        Seat seat = seatRepository.findByTableNumberAndAuthCode(tableNumber, authCode)
                 .orElseThrow(() -> new RuntimeException("Table not found"));
 
         TableOrder tableOrder = tableOrderRepository.findByTableAndStatus(seat, OrderStatus.CART)
@@ -48,15 +48,16 @@ public class OrderService {
         }
         // 계산된 총액을 tableOrder에 설정
         tableOrder.updateTotalPrice(totalPrice);
-
         tableOrder.markAsOrdered();
+
         return tableOrderRepository.save(tableOrder);
     }
+
     /**
      * 테이블 별 주문 내역 조회
      */
-    public List<TableOrderReqDto> getOrdersByTable(String tableNumber) {
-        Seat seat = seatRepository.findByTableNumber(tableNumber)
+    public List<TableOrderReqDto> getOrdersByTable(String tableNumber, String authCode) {
+        Seat seat = seatRepository.findByTableNumberAndAuthCode(tableNumber, authCode)
                 .orElseThrow(() -> new RuntimeException("Table not found"));
 
         List<TableOrder> tableOrders = tableOrderRepository.findByTable(seat);
@@ -66,6 +67,7 @@ public class OrderService {
                 .map(this::convertToDto)
                 .toList();
     }
+
     private TableOrderReqDto convertToDto(TableOrder order) {
         List<OrderMenuReqDto> orderMenuDtos = order.getOrderMenus().stream()
                 .map(menu -> new OrderMenuReqDto(menu.getId(), menu.getMenu().getName(), menu.getQuantity()))
@@ -79,3 +81,4 @@ public class OrderService {
         );
     }
 }
+

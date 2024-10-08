@@ -1,10 +1,11 @@
 package com.project.orderflow.admin.restController;
 
-import com.project.orderflow.admin.dto.EmailCheckDto;
-import com.project.orderflow.admin.dto.SignUpDto;
+import com.project.orderflow.admin.domain.Owner;
+import com.project.orderflow.admin.dto.*;
+import com.project.orderflow.admin.repository.OwnerRepository;
 import com.project.orderflow.admin.service.MailSendService;
 import com.project.orderflow.admin.service.OwnerService;
-import io.swagger.v3.oas.annotations.Operation;
+//import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController;
@@ -22,13 +23,14 @@ public class AuthRestController {
     private final OwnerService ownerService;
     private final MailSendService mailSendService;
     private final BasicErrorController basicErrorController;
+    private final OwnerRepository ownerRepository;
 
     //메일 인증 요청
     @PostMapping("/email/send")
-    public ResponseEntity<?> mailAuthCheck(@RequestBody EmailCheckDto emailCheckDto){
+    public ResponseEntity<?> mailAuthCheck(@RequestBody EmailRequestDto emailRequestDto){
         log.info("이메일 인증 코드 요청");
         try{
-            String verifyCode = mailSendService.joinEmail(emailCheckDto.getEmail());
+            String verifyCode = mailSendService.joinEmail(emailRequestDto.getEmail());
             log.info("이메일 인증 코드 전송 성공: "+verifyCode);
 
             return ResponseEntity.ok(Map.of(
@@ -65,5 +67,32 @@ public class AuthRestController {
         log.info("owner 회원 가입 성공");
         return ResponseEntity.ok(Map.of("message", "회원가입 성공!"));
 
+    }
+
+    // 정보 수정
+    // 사업자번호 수정, 비밀번호 수정
+    @PostMapping("/{ownerId}/updateInfo")
+    public ResponseEntity<?> updateInfo(@PathVariable Long ownerId, @RequestBody InfoUpdateDto infoUpdateDto){
+        log.info("정보 수정 요청");
+        try{
+            ownerService.updateOwnerInfo(ownerId, infoUpdateDto);
+            return ResponseEntity.ok(Map.of("message","정보 수정 성공"));
+        }catch (Exception e){
+            log.error("정보 수정 실패",e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message","정보 수정 중 오류 발생"));
+        }
+    }
+
+    @DeleteMapping("{ownerId}/deleteInfo")
+    public ResponseEntity<?> deleteInfo(@PathVariable Long ownerId){
+        Owner owner =ownerService.findOwnerById(ownerId);
+        if(owner == null){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "회원 찾을 수 없음"));
+        }
+
+        ownerRepository.delete(owner);
+        return ResponseEntity.ok(Map.of("message","회원삭제 성공!!"));
     }
 }
