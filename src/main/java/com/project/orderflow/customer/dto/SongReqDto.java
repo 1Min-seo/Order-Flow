@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class SongReqDto {
 
+    private Long ownerId;
+
     private String tableNumber;
 
     private String title;

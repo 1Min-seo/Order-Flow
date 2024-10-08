@@ -12,6 +12,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class FeedbackDto {
 
+    private Long ownerId;
+
     private String tableNumber;
 
     private double score;

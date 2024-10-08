@@ -1,10 +1,12 @@
 package com.project.orderflow.customer.domain;
-
+import java.time.LocalDateTime;
 import com.project.orderflow.customer.domain.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.Date;
 
 /**
  * 주문한 메뉴 목록
@@ -21,11 +23,11 @@ public class OrderMenu {
 
     @ManyToOne
     @JoinColumn(name="menu_id")
-    private Menu menu;          // 음식 메뉴
+    private Menu menu;
 
-    private int quantity;       // 주문 수량
+    private int quantity;
 
-    private int orderPrice;     //주문 가격(total)
+    private int orderPrice;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
@@ -42,14 +44,15 @@ public class OrderMenu {
         this.status = status;
         this.tableOrder = tableOrder;
     }
+
     // 수량과 가격을 업데이트하는 메서드
     public void updateQuantity(int newQuantity) {
-            this.quantity = newQuantity;
-            this.orderPrice = this.menu.getPrice() * newQuantity;
+        this.quantity = newQuantity;
+        this.orderPrice = this.menu.getPrice() * newQuantity;
     }
-    // 상태를 주문으로 변경
+
+    // 상태를 주문으로 변경하고 주문 시간을 저장
     public void changeToOrder() {
-            this.status = OrderStatus.ORDERED;
+        this.status = OrderStatus.ORDERED;
     }
 }
-

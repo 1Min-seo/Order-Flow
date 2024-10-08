@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -35,8 +34,8 @@ public class CartService {
      * 장바구니에 담긴 모든 항목을 반환 / 하나일 때도 리스트 형태로 반환
      */
     @Transactional
-    public List<OrderMenuReqDto> getCartMenus(String tableNumber) {
-        Seat seat = seatRepository.findByTableNumber(tableNumber)
+    public List<OrderMenuReqDto> getCartMenus(String tableNumber, String authCode) {
+        Seat seat = seatRepository.findByTableNumberAndAuthCode(tableNumber, authCode)
                 .orElseThrow(() -> new RuntimeException("Table not found"));
 
         List<OrderMenu> orderMenus = orderMenuRepository.findByTableOrder_TableAndStatus(seat, OrderStatus.CART);
@@ -50,9 +49,9 @@ public class CartService {
      * 장바구니 메뉴 추가 - 여러 항목이든 한 항목이든
      */
     @Transactional
-    public void addMenusToCart(String tableNumber, List<OrderMenuReqDto> orderMenuReqDtoList) {
-        // 테이블 번호로 Seat 객체 조회
-        Seat seat = seatRepository.findByTableNumber(tableNumber)
+    public void addMenusToCart(String tableNumber, String authCode, List<OrderMenuReqDto> orderMenuReqDtoList) {
+        // 테이블 번호와 인증 코드로 Seat 객체 조회
+        Seat seat = seatRepository.findByTableNumberAndAuthCode(tableNumber, authCode)
                 .orElseThrow(() -> new RuntimeException("Table not found"));
 
         // 테이블 번호에 해당하는 장바구니 주문 조회
@@ -67,6 +66,7 @@ public class CartService {
                     tableOrderRepository.save(newOrder);
                     return newOrder;
                 });
+
         // OrderMenu 객체 리스트 생성
         List<OrderMenu> orderMenus = new ArrayList<>();
         for (OrderMenuReqDto orderMenuReqDto : orderMenuReqDtoList) {
@@ -126,5 +126,4 @@ public class CartService {
             throw new RuntimeException("장바구니 메뉴를 삭제할 수 없습니다.");
         }
     }
-
 }

@@ -28,8 +28,8 @@ public class OrderController {
 
     @PostMapping
     @Operation(summary = "메뉴 주문", description = "테이블 번호에 해당하는 장바구니를 주문으로 전환하였습니다.")
-    public ResponseEntity<OrderResDto> placeOrder(@RequestParam String tableNumber) {
-        TableOrder tableOrder = orderService.order(tableNumber);
+    public ResponseEntity<OrderResDto> placeOrder(@RequestParam String tableNumber, @RequestParam String authCode) {
+        TableOrder tableOrder = orderService.order(tableNumber, authCode);
         OrderResDto response = new OrderResDto(
                 "Order placed successfully",
                 tableOrder.getId(),
@@ -41,8 +41,8 @@ public class OrderController {
 
     @GetMapping("/table/{tableNumber}")
     @Operation(summary = "테이블 주문 조회", description = "테이블 번호로 주문을 조회합니다.")
-    public List<TableOrderReqDto> getOrdersByTable(@PathVariable String tableNumber) {
-        return orderService.getOrdersByTable(tableNumber);
+    public List<TableOrderReqDto> getOrdersByTable(@PathVariable String tableNumber, @RequestParam String authCode) {
+        return orderService.getOrdersByTable(tableNumber, authCode);
     }
 
     @GetMapping("/option/list")
@@ -62,9 +62,9 @@ public class OrderController {
         // 옵션 주문 처리
         optionOrderReqDto.getOptionOrders().forEach(optionOrder ->
                 log.info("Option ID = {}, Quantity = {}, Table Number = {}",
-                optionOrder.getOptionId(),
-                optionOrder.getQuantity(),
-                tableNum));
+                        optionOrder.getOptionId(),
+                        optionOrder.getQuantity(),
+                        tableNum));
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

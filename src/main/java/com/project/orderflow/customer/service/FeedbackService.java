@@ -4,40 +4,43 @@ import com.project.orderflow.customer.domain.Feedback;
 import com.project.orderflow.customer.dto.FeedbackDto;
 import com.project.orderflow.customer.repository.FeedbackRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class FeedbackService {
 
-    private final FeedbackRepository feedbackRepository;
+    @Autowired
+    private FeedbackRepository feedbackRepository;
 
-    public void saveFeedback(FeedbackDto feedbackDto) {
-
+    public void submitFeedback(Long ownerId, FeedbackDto feedbackDto) {
         Feedback feedback = Feedback.builder()
+                .ownerId(ownerId)
                 .tableNumber(feedbackDto.getTableNumber())
                 .score(feedbackDto.getScore())
                 .comment(feedbackDto.getComment())
-                .createdAt(LocalDateTime.now())
+                .createdAt(feedbackDto.getCreatedAt())
                 .build();
-
         feedbackRepository.save(feedback);
     }
 
-    // 모든 피드백 조회
-    public List<FeedbackDto> getAllFeedback() {
-        List<Feedback> feedbackList = feedbackRepository.findAll();
-        return feedbackList.stream()
-                .map(feedback -> new FeedbackDto(
-                        feedback.getTableNumber(),
-                        feedback.getScore(),
-                        feedback.getComment(),
-                        feedback.getCreatedAt()
-                ))
-                .collect(Collectors.toList());
+    public List<Feedback> getFeedbacksByOwnerId(Long ownerId) {
+        return feedbackRepository.findByOwnerId(ownerId);
+    }
+
+    public void addCommentToFeedback(Long feedbackId, String comment) {
+        Optional<Feedback> feedbackOptional = feedbackRepository.findById(feedbackId);
+        if (feedbackOptional.isEmpty()) {
+            throw new IllegalStateException("해당 피드백을 찾을 수 없습니다.");
+        }
+        Feedback feedback = feedbackOptional.get();
+        feedback.addComment(comment);
+        feedbackRepository.save(feedback);
     }
 }

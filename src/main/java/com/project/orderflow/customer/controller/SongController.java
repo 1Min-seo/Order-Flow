@@ -1,5 +1,8 @@
 package com.project.orderflow.customer.controller;
 
+import com.project.orderflow.admin.domain.Owner;
+import com.project.orderflow.admin.service.OwnerService;
+import com.project.orderflow.customer.domain.Song;
 import com.project.orderflow.customer.domain.enums.SongStatus;
 import com.project.orderflow.customer.dto.SongReqDto;
 import com.project.orderflow.customer.service.SongReqService;
@@ -7,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,26 +24,24 @@ import java.util.List;
 @Tag(name = "Song", description = "노래 신청 API")
 public class SongController {
 
-    private final SongReqService songReqService;
+    @Autowired
+    private SongReqService songService;
 
     @PostMapping("/request")
-    @Operation(summary = "노래 신청", description = "고객이 노래 제목과 가수 정보와 함께 신청하였습니다.")
-    public ResponseEntity<Void> requestSong(@RequestBody SongReqDto songReqDto){
-        songReqService.saveSongRequest(songReqDto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<String> requestSong(@RequestBody SongReqDto songReqDto) {
+        songService.requestSong(songReqDto);
+        return ResponseEntity.ok("노래 신청이 완료되었습니다.");
     }
 
-    @GetMapping("/list")
-    @Operation(summary = "신청받은 노래 목록 조히", description = "신청받은 노래 목록를 최신순으로 조회합니다.")
-    public ResponseEntity<List<SongReqDto>> listSong(){
-        return ResponseEntity.ok(songReqService.getAllSongRequests());
+    @GetMapping("/list/{ownerId}")
+    public ResponseEntity<List<Song>> getSongsByOwnerId(@PathVariable Long ownerId) {
+        List<Song> songs = songService.getSongsByOwnerId(ownerId);
+        return ResponseEntity.ok(songs);
     }
 
-    // 관리자가 노래 신청 상태 변경
-    @PatchMapping("/{id}/status")
-    @Operation(summary = "노래 신청 상태 변경", description = "노래 신청 상태를 변경합니다.")
-    public ResponseEntity<Void> updateSongRequestStatus(@PathVariable Long id, @RequestParam SongStatus status) {
-        songReqService.updateSongRequestStatus(id, status);
-        return ResponseEntity.ok().build();
+    @PutMapping("/status/{ownerId}/{songId}")
+    public ResponseEntity<String> changeSongStatus(@PathVariable Long ownerId, @PathVariable Long songId, @RequestParam SongStatus newStatus) {
+        songService.changeSongStatus(ownerId, songId, newStatus);
+        return ResponseEntity.ok("노래 상태가 변경되었습니다.");
     }
 }

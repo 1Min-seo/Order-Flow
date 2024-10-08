@@ -5,55 +5,43 @@ import com.project.orderflow.customer.domain.enums.SongStatus;
 import com.project.orderflow.customer.dto.SongReqDto;
 import com.project.orderflow.customer.repository.SongRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class SongReqService {
 
-    private final SongRepository songRepository;
+    @Autowired
+    private SongRepository songRepository;
 
-    /**
-     * 신청 노래 저장
-     */
-    public void saveSongRequest(SongReqDto songReqDto) {
-        Song songReq = Song.builder()
+    public void requestSong(SongReqDto songReqDto) {
+        Song song = Song.builder()
+                .ownerId(songReqDto.getOwnerId())
                 .tableNumber(songReqDto.getTableNumber())
                 .title(songReqDto.getTitle())
                 .artist(songReqDto.getArtist())
-                .status(SongStatus.IN_PROGRESS)
-                .requestedAt(LocalDateTime.now())
+                .status(songReqDto.getStatus())
+                .requestedAt(songReqDto.getRequestedAt())
                 .build();
-
-        songRepository.save(songReq);
+        songRepository.save(song);
     }
 
-    /**
-     * 신청 노래 목록 조회
-     */
-    public List<SongReqDto> getAllSongRequests() {
-        return songRepository.findAllByOrderByRequestedAtAsc().stream()
-                .map(song -> new SongReqDto(
-                        song.getTableNumber(),
-                        song.getArtist(),
-                        song.getTitle(),
-                        song.getStatus(),
-                        song.getRequestedAt()
-                ))
-                .toList();
+    public List<Song> getSongsByOwnerId(Long ownerId) {
+        return songRepository.findByOwnerId(ownerId);
     }
 
-    /**
-     * 노래 신청 상태 변경
-     */
-    public void updateSongRequestStatus(Long id, SongStatus status) {
-        Song songRequest = songRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("노래 신청을 찾을 수 없습니다."));
-
-        songRequest.changeStatus(status);
-        songRepository.save(songRequest);
+    public void changeSongStatus(Long ownerId, Long songId, SongStatus newStatus) {
+        Optional<Song> songOptional = songRepository.findByIdAndOwnerId(songId, ownerId);
+        if (songOptional.isEmpty()) {
+            throw new IllegalStateException("해당 노래를 찾을 수 없습니다.");
+        }
+        Song song = songOptional.get();
+        song.changeStatus(newStatus);
+        songRepository.save(song);
     }
 }

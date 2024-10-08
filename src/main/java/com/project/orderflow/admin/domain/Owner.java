@@ -30,14 +30,19 @@ public class Owner {
     @OneToOne(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private TableManagement tableManagement;
 
+    private Boolean isActive=false;
+
+//    @OneToOne(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private FoodManagement foodManagement;
+
 
     @Builder
-    public Owner(String email, String name, String passwordHash, String businessNumber) {
+    public Owner(String email, String name, String passwordHash, String businessNumber, Boolean isActive) {
         this.email = email;
         this.name = name;
         this.passwordHash = passwordHash;
         this.businessNumber = businessNumber;
-
+        this.isActive = isActive;
     }
 
 }

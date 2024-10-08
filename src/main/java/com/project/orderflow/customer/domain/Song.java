@@ -17,6 +17,8 @@ public class Song {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Long ownerId;
+
     private String tableNumber;
 
     private String title;
@@ -29,7 +31,8 @@ public class Song {
     private LocalDateTime requestedAt;
 
     @Builder
-    public Song(String tableNumber, String title, String artist, SongStatus status, LocalDateTime requestedAt) {
+    public Song(Long ownerId, String tableNumber, String title, String artist, SongStatus status, LocalDateTime requestedAt) {
+        this.ownerId = ownerId;
         this.tableNumber = tableNumber;
         this.title = title;
         this.artist = artist;
