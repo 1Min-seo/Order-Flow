@@ -4,16 +4,14 @@ import com.project.orderflow.admin.domain.Owner;
 import com.project.orderflow.admin.domain.Seat;
 import com.project.orderflow.admin.domain.TableManagement;
 import com.project.orderflow.admin.repository.OwnerRepository;
+import com.project.orderflow.admin.repository.SeatRepository;
 import com.project.orderflow.admin.repository.TableManagementRepository;
-import jakarta.persistence.Table;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -24,7 +22,7 @@ public class TableManagementService {
     private final TableManagementRepository tableManagementRepository;
     private final SeatService seatService;
     private final OwnerRepository ownerRepository;
-    //private final FoodManagementService foodManagementService;
+    private final SeatRepository seatRepository;
 
     @Value("${qr.code.api}")
     private String qrCodeApiUrl;
@@ -115,5 +113,12 @@ public class TableManagementService {
 
         }
     }
+
+    public List<Seat> getSeatsByOwner(Owner owner) {
+        TableManagement tableManagement = owner.getTableManagement();
+        return tableManagement != null ? tableManagement.getSeats() : List.of();
+    }
+
+
 }
 

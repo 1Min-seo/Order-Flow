@@ -1,6 +1,7 @@
 package com.project.orderflow.admin.restController;
 
 import com.project.orderflow.admin.domain.Owner;
+import com.project.orderflow.admin.domain.Seat;
 import com.project.orderflow.admin.dto.TableSetUpDto;
 import com.project.orderflow.admin.service.OwnerService;
 import com.project.orderflow.admin.service.TableManagementService;
@@ -8,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -47,4 +51,16 @@ public class TableManagementRestController {
         log.info("좌석 {}개 삭제", seatsToRemove);
         return ResponseEntity.ok("좌석 삭제 완료");
     }
+
+    @GetMapping("/{ownerId}/seats")
+    public ResponseEntity<?> getSeatsByOwnerId(@PathVariable(name = "ownerId") Long ownerId) {
+        Owner owner = ownerService.findOwnerById(ownerId);
+        List<Seat> seats = tableManagementService.getSeatsByOwner(owner);
+
+        if (seats.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(seats);
+    }
+
 }
