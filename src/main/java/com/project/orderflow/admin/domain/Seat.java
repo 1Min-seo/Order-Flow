@@ -19,7 +19,6 @@ public class Seat {
 
     @Column(nullable = false)
     private String tableNumber;
-
     @Column(nullable = false, unique = true)
     private String authCode;
 
