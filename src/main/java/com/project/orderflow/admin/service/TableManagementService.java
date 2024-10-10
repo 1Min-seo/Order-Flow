@@ -102,6 +102,7 @@ public class TableManagementService {
                 throw new IllegalArgumentException("좌석은 0개 이상이어야 합니다.");
             }
 
+
             List<Seat> seats= tableManagement.getSeats();
             for(int i= currentSeats-1; i>=newSeatCount; i--){
                 seatService.deleteSeat(seats.get(i));

@@ -52,6 +52,7 @@ public class TableManagementRestController {
         return ResponseEntity.ok("좌석 삭제 완료");
     }
 
+
     @GetMapping("/{ownerId}/seats")
     public ResponseEntity<?> getSeatsByOwnerId(@PathVariable(name = "ownerId") Long ownerId) {
         Owner owner = ownerService.findOwnerById(ownerId);

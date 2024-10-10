@@ -28,6 +28,7 @@ public class Seat {
     @Column(nullable = false)
     private String qrUrl;
 
+
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name="table_management_id", nullable = false)

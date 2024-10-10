@@ -15,6 +15,7 @@ import java.util.Random;
 @Getter
 public class TableManagement {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
