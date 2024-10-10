@@ -27,6 +27,8 @@ public class Feedback {
 
     private LocalDateTime createdAt;
 
+    private String reply;
+
     @Builder
     public Feedback(Long ownerId, String tableNumber, double score, String comment, LocalDateTime createdAt) {
         this.ownerId = ownerId;
@@ -38,5 +40,9 @@ public class Feedback {
 
     public void addComment(String additionalComment) {
         this.comment = this.comment + "\n" + additionalComment;
+    }
+
+    public void addReply(String additionalReply) {
+        this.reply = additionalReply;
     }
 }

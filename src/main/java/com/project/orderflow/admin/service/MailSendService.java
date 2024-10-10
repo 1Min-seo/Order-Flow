@@ -1,5 +1,6 @@
 package com.project.orderflow.admin.service;
 
+import com.project.orderflow.admin.domain.Phone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -14,7 +15,8 @@ public class MailSendService {
 
     @Autowired
     private JavaMailSender mailSender;
-
+    @Autowired
+    Phone phone;
     @Autowired
     private RedisUtil redisUtil;
 
@@ -46,8 +48,7 @@ public class MailSendService {
     }
 
     public boolean checkAuthNum(String email, String authNum) {
-        String storedEmail = redisUtil.getData(authNum);
-        if(storedEmail!=null && storedEmail.equals(email)){
+        if(phone.getRand().equals(authNum)){
             return true;
         }else{
             return false;

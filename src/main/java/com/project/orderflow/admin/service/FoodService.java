@@ -1,9 +1,11 @@
 package com.project.orderflow.admin.service;
 
 import com.project.orderflow.admin.domain.Category;
+import com.project.orderflow.admin.domain.CategoryDto;
 import com.project.orderflow.admin.domain.Food;
 //import com.project.orderflow.admin.domain.FoodManagement;
 import com.project.orderflow.admin.domain.Owner;
+import com.project.orderflow.admin.dto.FoodDto;
 import com.project.orderflow.admin.dto.FoodRegistDto;
 import com.project.orderflow.admin.dto.FoodUpdateDto;
 import com.project.orderflow.admin.repository.CategoryRepository;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +32,7 @@ public class FoodService {
     private final OwnerRepository ownerRepository;
     private final S3Service s3Service;
 
-    public Food saveFood(Owner owner, FoodRegistDto foodRegistDto) throws IOException {
+    public Food saveFood(long ownerId, FoodRegistDto foodRegistDto) throws IOException {
         String categoryName = foodRegistDto.getCategoryName();
 
         Category category = categoryRepository.findByName(categoryName)
@@ -40,9 +43,12 @@ public class FoodService {
 
         String imageUrl = "https://orderflow-bk.s3.amazonaws.com/" + fileName;
 
+        System.out.println(ownerId);
+
         Food food = Food.builder()
                 .name(foodRegistDto.getName())
                 .imageUrl(imageUrl)  // S3 이미지 URL 설정
+                .tableManagementId(ownerId)
                 .description(foodRegistDto.getDescription())
                 .price(foodRegistDto.getPrice())
                 .category(category)
@@ -81,5 +87,27 @@ public class FoodService {
     }
 
     public void updateFood(Food existingFood) {
+    }
+
+    public List<FoodDto> getFoodsByOwnerId(Long ownerId) {
+        return foodRepository.findByTableManagementId(ownerId).stream()
+                .map(food -> new FoodDto(food.getName(), food.getCategory().getName(), food.getPrice(), food.getDescription(), food.getImageUrl()))
+                .collect(Collectors.toList());
+    }
+
+    public List<String> getCategoriesByOwnerId(Long ownerId) {
+        return foodRepository.findByTableManagementId(ownerId).stream()
+                .map(food -> food.getCategory().getName())
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    public Category saveCategory(CategoryDto categoryDto) {
+        if (categoryRepository.findByName(categoryDto.getName()).isPresent()) {
+            throw new IllegalArgumentException("이미 존재하는 카테고리입니다: " + categoryDto.getName());
+        }
+
+        Category category = new Category(categoryDto.getName());
+        return categoryRepository.save(category);
     }
 }

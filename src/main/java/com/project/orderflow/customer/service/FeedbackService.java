@@ -40,7 +40,7 @@ public class FeedbackService {
             throw new IllegalStateException("해당 피드백을 찾을 수 없습니다.");
         }
         Feedback feedback = feedbackOptional.get();
-        feedback.addComment(comment);
+        feedback.addReply(comment);
         feedbackRepository.save(feedback);
     }
 }

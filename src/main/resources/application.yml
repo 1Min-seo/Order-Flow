@@ -67,3 +67,8 @@ openai:
 
 jwt:
   secret: '4oCYc2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQtc2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXTigJkK'
+
+coolsms:
+  api:
+    key: NCSRH6Q6ILREH2QF
+    secret: C15D2OCMIHBW8UQ2ARMP2FBDAH8D0ZYX

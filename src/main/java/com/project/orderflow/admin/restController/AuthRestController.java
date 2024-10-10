@@ -25,26 +25,6 @@ public class AuthRestController {
     private final BasicErrorController basicErrorController;
     private final OwnerRepository ownerRepository;
 
-    //메일 인증 요청
-    @PostMapping("/email/send")
-    public ResponseEntity<?> mailAuthCheck(@RequestBody EmailRequestDto emailRequestDto){
-        log.info("이메일 인증 코드 요청");
-        try{
-            String verifyCode = mailSendService.joinEmail(emailRequestDto.getEmail());
-            log.info("이메일 인증 코드 전송 성공: "+verifyCode);
-
-            return ResponseEntity.ok(Map.of(
-                    "message", "인증 이메일이 성공적으로 발송되었습니다.",
-                    "verifyCode", verifyCode
-            ));
-        }catch(Exception e){
-            log.error("이메일 인증 코드 전송 실패");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("message", "인증 이메일 발송을 실패하였습니다."));
-        } 
-
-    }
-
     //회원가입 요청
     @PostMapping("/signUp/send")
     public ResponseEntity<?> signUpCheck(@RequestBody SignUpDto signUpDto){
