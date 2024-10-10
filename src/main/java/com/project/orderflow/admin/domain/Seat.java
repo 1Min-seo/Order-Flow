@@ -1,5 +1,6 @@
 package com.project.orderflow.admin.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.Order;
 import lombok.Builder;
@@ -18,7 +19,6 @@ public class Seat {
 
     @Column(nullable = false)
     private String tableNumber;
-
     @Column(nullable = false, unique = true)
     private String authCode;
 
@@ -28,7 +28,9 @@ public class Seat {
     @Column(nullable = false)
     private String qrUrl;
 
+
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name="table_management_id", nullable = false)
     private TableManagement tableManagement;
 
