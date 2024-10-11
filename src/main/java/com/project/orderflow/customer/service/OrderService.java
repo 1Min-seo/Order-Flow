@@ -62,4 +62,13 @@ public class OrderService {
     public List<Order> getOrderHistory(Long ownerId) {
         return orderRepository.findByOwnerId(ownerId);
     }
+
+    // 음식 주문 삭제
+    @Transactional
+    public void deleteFoodOrder(Long orderId) {
+        if (!orderRepository.existsById(orderId)) {
+            throw new IllegalArgumentException("해당 주문이 존재하지 않습니다.");
+        }
+        orderRepository.deleteById(orderId);
+    }
 }

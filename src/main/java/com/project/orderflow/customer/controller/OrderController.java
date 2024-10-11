@@ -70,5 +70,17 @@ public class OrderController {
         Order order = orderService.completeOrder(orderId);
         return ResponseEntity.ok(order);
     }
+
+
+    @Operation(
+            summary = "주문 취소(관리자)",
+            description = "order id값 넣어야함."
+    )
+    // 음식 주문 삭제
+    @DeleteMapping("/delete-food-order/{orderId}")
+    public ResponseEntity<Void> deleteFoodOrder(@PathVariable Long orderId) {
+        orderService.deleteFoodOrder(orderId);
+        return ResponseEntity.noContent().build();
+    }
 }
 

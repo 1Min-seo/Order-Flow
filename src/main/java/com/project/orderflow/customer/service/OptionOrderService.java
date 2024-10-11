@@ -55,5 +55,14 @@ public class OptionOrderService {
     public List<OptionOrder> getOptionOrderHistory(Long ownerId) {
         return optionOrderRepository.findByOwnerId(ownerId);
     }
+
+    // 옵션 주문 삭제
+    @Transactional
+    public void deleteOptionOrder(Long optionOrderId) {
+        if (!optionOrderRepository.existsById(optionOrderId)) {
+            throw new IllegalArgumentException("해당 옵션 주문이 존재하지 않습니다.");
+        }
+        optionOrderRepository.deleteById(optionOrderId);
+    }
 }
 

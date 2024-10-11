@@ -64,4 +64,17 @@ public class OptionOrderController {
         OptionOrder optionOrder = optionOrderService.completeOptionOrder(optionOrderId);
         return ResponseEntity.ok(optionOrder);
     }
+
+    @Operation(
+            summary = "옵션 주문 삭제",
+            description = "옵션주문 id값 넣으면됌"
+    )
+    // 옵션 주문 삭제
+    @DeleteMapping("/delete-option-order/{optionOrderId}")
+    public ResponseEntity<Void> deleteOptionOrder(@PathVariable Long optionOrderId) {
+        optionOrderService.deleteOptionOrder(optionOrderId);
+        return ResponseEntity.noContent().build();
+    }
+
+
 }
