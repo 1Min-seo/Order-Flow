@@ -5,6 +5,8 @@ import com.project.orderflow.admin.domain.Seat;
 import com.project.orderflow.admin.dto.TableSetUpDto;
 import com.project.orderflow.admin.service.OwnerService;
 import com.project.orderflow.admin.service.TableManagementService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -18,12 +20,12 @@ import java.util.stream.Collectors;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
+@Tag(name = "테이블 관리", description = "테이블 관리")
 @RequestMapping("/api/table/manage")
 public class TableManagementRestController {
     private final OwnerService ownerService;
     private final TableManagementService tableManagementService;
 
-     
     @PostMapping("/{ownerId}/setUp")
     public ResponseEntity<?> tableManage(@PathVariable(name="ownerId") Long ownerId, @RequestBody TableSetUpDto tableSetUpDto){
         Owner owner = ownerService.findOwnerById(ownerId);
@@ -35,6 +37,10 @@ public class TableManagementRestController {
         return ResponseEntity.ok("ok");
     }
 
+    @Operation(
+            summary = "테이블 생성(관리자)",
+            description = "테이블 생성(관리자) JWT토큰에 추출된 id값과 테이블의 x,y값"
+    )
     @PostMapping("/{ownerId}/addSeat")
     public ResponseEntity<?> addSeat(@PathVariable(name="ownerId") Long ownerId, @RequestParam Double x, @RequestParam Double y) {
         Owner owner = ownerService.findOwnerById(ownerId);
@@ -49,6 +55,10 @@ public class TableManagementRestController {
         return ResponseEntity.ok("좌석 추가 완료");
     }
 
+    @Operation(
+            summary = "테이블 삭제(관리자)",
+            description = "JWT토큰에 추출된 id값과 해당 테이블의 id값"
+    )
     // 좌석 삭제 API
     @DeleteMapping("/{ownerId}/delete-seat/{seatId}")
     public ResponseEntity<?> deleteSeat(@PathVariable Long ownerId, @PathVariable Long seatId) {
@@ -64,6 +74,10 @@ public class TableManagementRestController {
 
 
 
+    @Operation(
+            summary = "테이블 조회(관리자)",
+            description = "JWT토큰에 추출된 id값"
+    )
     @GetMapping("/{ownerId}/seats")
     public ResponseEntity<?> getSeatsByOwnerId(@PathVariable(name = "ownerId") Long ownerId) {
         Owner owner = ownerService.findOwnerById(ownerId);
@@ -75,6 +89,10 @@ public class TableManagementRestController {
         return ResponseEntity.ok(seats);
     }
 
+    @Operation(
+            summary = "테이블 이동(관리자)",
+            description = "JWT토큰에 추출된 id값, 해당 테이블 id값 움직인 좌표 값 x,y"
+    )
     // 테이블 이동 시 좌석의 x, y 좌표 변경 API
     @PutMapping("/{ownerId}/move-seat/{seatId}")
     public ResponseEntity<?> moveSeat(@PathVariable Long ownerId, @PathVariable Long seatId, @RequestParam Double x, @RequestParam Double y) {

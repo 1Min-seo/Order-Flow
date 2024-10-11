@@ -1,71 +1,52 @@
 package com.project.orderflow.customer.controller;
 
-import com.project.orderflow.customer.domain.OptionMenu;
-import com.project.orderflow.customer.domain.TableOrder;
-import com.project.orderflow.customer.dto.OptionOrderReqDto;
-import com.project.orderflow.customer.dto.OrderResDto;
-import com.project.orderflow.customer.dto.TableOrderReqDto;
-import com.project.orderflow.customer.service.OptionService;
+import com.project.orderflow.customer.domain.Order;
+import com.project.orderflow.customer.domain.enums.PaymentMethod;
 import com.project.orderflow.customer.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Slf4j
+@Tag(name = "음식주문", description = "주문(고객)/주문내역조회(관리자)")
 @RestController
-@RequestMapping("/api/order")
-@RequiredArgsConstructor
-@Tag(name = "Order", description = "Order API")
+@RequestMapping("/api/orders")
 public class OrderController {
+
     private final OrderService orderService;
-    private final OptionService optionService;
 
-    @PostMapping
-    @Operation(summary = "메뉴 주문", description = "테이블 번호에 해당하는 장바구니를 주문으로 전환하였습니다.")
-    public ResponseEntity<OrderResDto> placeOrder(@RequestParam String tableNumber, @RequestParam String authCode) {
-        TableOrder tableOrder = orderService.order(tableNumber, authCode);
-        OrderResDto response = new OrderResDto(
-                "Order placed successfully",
-                tableOrder.getId(),
-                tableNumber,
-                tableOrder.getTotalPrice());
-
-        return ResponseEntity.ok(response);
+    public OrderController(OrderService orderService) {
+        this.orderService = orderService;
     }
 
-    @GetMapping("/table/{tableNumber}")
-    @Operation(summary = "테이블 주문 조회", description = "테이블 번호로 주문을 조회합니다.")
-    public List<TableOrderReqDto> getOrdersByTable(@PathVariable String tableNumber, @RequestParam String authCode) {
-        return orderService.getOrdersByTable(tableNumber, authCode);
+    @Operation(
+            summary = "음식주문(고객)",
+            description = "ownerId에는 JWT토큰에서 추출한 Id값을 넣어주시고, foodName에는 해당 음식의 이름 paymentMethod는 CASG CARD KAKAOPAY중 하나 넣어주시고 tableId는 해당 테이블의 id값 넣어주시면 됩니다!"
+    )
+    // 일반 주문 및 결제 처리 (옵션 주문은 별도로 처리)
+    @PostMapping("/place-order")
+    public ResponseEntity<Order> placeOrder(
+            @RequestParam Long ownerId,
+            @RequestParam String foodName,
+            @RequestParam Integer quantity,
+            @RequestParam PaymentMethod paymentMethod,
+            @RequestParam Long tableId // 테이블 ID 추가
+    ) {
+        Order order = orderService.placeOrder(ownerId, foodName, quantity, paymentMethod, tableId); // option 파라미터 삭제
+        return ResponseEntity.ok(order);
     }
 
-    @GetMapping("/option/list")
-    @Operation(summary = "옵션 목록 조회", description = "주문하고자하는 옵션 목록을 조회합니다.")
-    public ResponseEntity<List<OptionMenu>> getOptions() {
-        List<OptionMenu> options = optionService.getAllOptions();
-        return ResponseEntity.ok(options);
-    }
-
-    @PostMapping("/option")
-    @Operation(summary = "옵션 주문", description = "해당하는 옵션을 주문합니다.")
-    public ResponseEntity<Void> orderOptions(@RequestBody OptionOrderReqDto optionOrderReqDto) {
-        // 테이블 번호 확인
-        String tableNum = optionOrderReqDto.getTableNumber();
-        log.info("주문한 테이블 번호: {}", tableNum);
-
-        // 옵션 주문 처리
-        optionOrderReqDto.getOptionOrders().forEach(optionOrder ->
-                log.info("Option ID = {}, Quantity = {}, Table Number = {}",
-                        optionOrder.getOptionId(),
-                        optionOrder.getQuantity(),
-                        tableNum));
-
-        return new ResponseEntity<>(HttpStatus.OK);
+    @Operation(
+            summary = "음식주문내역 조회(관리자)",
+            description = "ownerId에는 JWT토큰에서 추출한 Id값을 넣어"
+    )
+    // 주문내역 보기
+    @GetMapping("/history/{ownerId}")
+    public ResponseEntity<List<Order>> getOrderHistory(@PathVariable Long ownerId) {
+        List<Order> orders = orderService.getOrderHistory(ownerId);
+        return ResponseEntity.ok(orders);
     }
 }
+

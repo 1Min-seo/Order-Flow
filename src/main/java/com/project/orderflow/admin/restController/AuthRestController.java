@@ -6,6 +6,8 @@ import com.project.orderflow.admin.repository.OwnerRepository;
 import com.project.orderflow.admin.service.MailSendService;
 import com.project.orderflow.admin.service.OwnerService;
 //import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController;
@@ -18,6 +20,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@Tag(name = "테이블 연결(고객)", description = "테이블 연결")
 @Slf4j
 public class AuthRestController {
     private final OwnerService ownerService;
@@ -26,6 +29,10 @@ public class AuthRestController {
     private final OwnerRepository ownerRepository;
 
     //회원가입 요청
+    @Operation(
+            summary = "회원가입 신청(JWT권한없음)",
+            description = "email: 아이디 verifyCode: 핸드폰 인증번호"
+    )
     @PostMapping("/signUp/send")
     public ResponseEntity<?> signUpCheck(@RequestBody SignUpDto signUpDto){
         log.info("회원가입 요청");
@@ -51,6 +58,11 @@ public class AuthRestController {
 
     // 정보 수정
     // 사업자번호 수정, 비밀번호 수정
+    //회원가입 요청
+    @Operation(
+            summary = "회원정보 수정",
+            description = "onwerId: JWT Id추출 값"
+    )
     @PostMapping("/{ownerId}/updateInfo")
     public ResponseEntity<?> updateInfo(@PathVariable Long ownerId, @RequestBody InfoUpdateDto infoUpdateDto){
         log.info("정보 수정 요청");
@@ -64,6 +76,10 @@ public class AuthRestController {
         }
     }
 
+    @Operation(
+            summary = "회원정보 삭제",
+            description = "onwerId: JWT Id추출 값"
+    )
     @DeleteMapping("{ownerId}/deleteInfo")
     public ResponseEntity<?> deleteInfo(@PathVariable Long ownerId){
         Owner owner =ownerService.findOwnerById(ownerId);

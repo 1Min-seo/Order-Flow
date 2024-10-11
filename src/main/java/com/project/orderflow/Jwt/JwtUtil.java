@@ -52,7 +52,7 @@ public class JwtUtil {
     public String generateToken(String email, Long ownerId) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", ownerId);  // id 값을 추가
-        claims.put("email", email);  // email 값을 추가
+        claims.put("TableNumber", email);  // email 값을 추가
         return doGenerateToken(claims, email);
     }
 

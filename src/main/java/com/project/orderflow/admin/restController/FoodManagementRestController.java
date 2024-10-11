@@ -13,6 +13,8 @@ import com.project.orderflow.admin.service.OwnerService;
 //import io.swagger.annotations.ApiParam;
 //import io.swagger.v3.oas.annotations.Parameter;
 import com.project.orderflow.admin.service.S3Service;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -26,6 +28,7 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "음식관리", description = "음식관리 API")
 @RequestMapping("/api/food-management")
 public class FoodManagementRestController {
     private final FoodService foodService;
@@ -34,6 +37,10 @@ public class FoodManagementRestController {
     private final FoodRepository foodRepository;
 
 
+    @Operation(
+            summary = "음식등록",
+            description = "{ownerId} JWT에서 추출한 id 값, name 음식 이름, image는 이미지, description 설명, price 가격, categoryName: 카테고리 이름"
+    )
     @PostMapping(value = "/{ownerId}/foodRegister", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> registFood(@ModelAttribute FoodRegistDto foodRegistDto, @PathVariable Long ownerId) {
         try {
@@ -51,7 +58,10 @@ public class FoodManagementRestController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("음식 등록 중 오류가 발생했습니다.");
         }
     }
-
+    @Operation(
+            summary = "음식수정",
+            description = "{ownerId} JWT에서 추출한 id 값,  foodId 해당 음식의 id 값, name 음식 이름, image는 이미지, description 설명, price 가격, categoryName: 카테고리 이름"
+    )
     @PostMapping(value = "{ownerId}/update/{foodId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateFood(@PathVariable Long ownerId, @PathVariable Long foodId, @ModelAttribute FoodUpdateDto foodUpdateDto) {
         try {
@@ -76,7 +86,10 @@ public class FoodManagementRestController {
         }
     }
 
-
+    @Operation(
+            summary = "음식삭제",
+            description = "{ownerId} JWT에서 추출한 id 값,  foodId 해당 음식의 id 값"
+    )
     @DeleteMapping("/{ownerId}/delete/{foodId}")
     public ResponseEntity<?> deleteFood(@PathVariable Long ownerId, @PathVariable Long foodId) {
         Owner owner = ownerService.findOwnerById(ownerId);
@@ -85,6 +98,11 @@ public class FoodManagementRestController {
         return ResponseEntity.ok("음식 삭제 성공");
     }
 
+
+    @Operation(
+            summary = "음식조회",
+            description = "{ownerId} JWT에서 추출한 id 값"
+    )
     @GetMapping("/{ownerId}/foods")
     public ResponseEntity<?> getFoodsByOwnerId(@PathVariable(name = "ownerId") Long ownerId) {
         List<FoodDto> foods = foodService.getFoodsByOwnerId(ownerId);
@@ -94,7 +112,10 @@ public class FoodManagementRestController {
         }
         return ResponseEntity.ok(foods);
     }
-
+    @Operation(
+            summary = "카테고리 조회",
+            description = "{ownerId} JWT에서 추출한 id 값"
+    )
     @GetMapping("/{ownerId}/categories")
     public ResponseEntity<?> getCategoriesByOwnerId(@PathVariable(name = "ownerId") Long ownerId) {
         List<String> categories = foodService.getCategoriesByOwnerId(ownerId);
