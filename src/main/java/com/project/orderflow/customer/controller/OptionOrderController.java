@@ -1,6 +1,7 @@
 package com.project.orderflow.customer.controller;
 
 import com.project.orderflow.customer.domain.OptionOrder;
+import com.project.orderflow.customer.dto.OptionOrderDto;
 import com.project.orderflow.customer.service.OptionOrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,18 +24,22 @@ public class OptionOrderController {
 
     @Operation(
             summary = "옵션 주문(고객)",
-            description = "ownerId에는 JWT토큰에서 추출한 Id값을 넣어주시고, optionId는 /api/options/list/{ownerId}에서 조회한 옵션 id 값 넣어주시고, tableId는 해당 테이블의 Id값을 넣어주시면 됩니다."
+            description = "ownerId에는 JWT토큰에서 추출한 Id값을 넣어주시고, optionId는 /api/options/list/{ownerId}에서 조회한 옵션 id 값 넣어주시고, tableId는 해당 테이블의 Id값을 넣어주시면 됩니다.  [{\n" +
+                    "    \"optionId\": 2,\n" +
+                    "    \"quantity\": 1\n" +
+                    "  },\n" +
+                    "  {\n" +
+                    "    \"optionId\": 3,\n" +
+                    "    \"quantity\": 1\n" +
+                    "  }]이런식으로 보내주시면 여러개 보낼수있어요."
     )
-    // 옵션 주문하기
-    @PostMapping("/place-order")
-    public ResponseEntity<OptionOrder> placeOptionOrder(
-            @RequestParam Long ownerId,
-            @RequestParam Long optionId,
-            @RequestParam Integer quantity,
-            @RequestParam Long tableId // 테이블 ID 추가
-    ) {
-        OptionOrder optionOrder = optionOrderService.placeOptionOrder(ownerId, optionId, quantity, tableId); // tableId 전달
-        return ResponseEntity.ok(optionOrder);
+    // 옵션 주문
+    @PostMapping("/place-option-orders")
+    public ResponseEntity<Void> placeOptionOrders(@RequestBody List<OptionOrderDto> optionOrders,
+                                                  @RequestParam Long ownerId,
+                                                  @RequestParam Long tableId) {
+        optionOrderService.placeOptionOrders(optionOrders, ownerId, tableId);
+        return ResponseEntity.ok().build();
     }
 
 

@@ -5,8 +5,10 @@ import com.project.orderflow.admin.repository.FoodRepository;
 import com.project.orderflow.customer.domain.Order;
 import com.project.orderflow.customer.domain.enums.OrderStatus;
 import com.project.orderflow.customer.domain.enums.PaymentMethod;
+import com.project.orderflow.customer.dto.FoodOrderDto;
 import com.project.orderflow.customer.repository.OrderRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,25 +25,28 @@ public class OrderService {
     }
 
     // 주문 및 결제 처리
-    public Order placeOrder(Long ownerId, String foodName, Integer quantity, PaymentMethod paymentMethod, Long tableId) {
-        Food food = foodRepository.findByName(foodName)
-                .orElseThrow(() -> new IllegalArgumentException("해당 음식이 없습니다."));
+    @Transactional
+    public void placeFoodOrders(List<FoodOrderDto> foodOrders, Long ownerId, Long tableId, PaymentMethod paymentMethod) {
+        for (FoodOrderDto foodOrder : foodOrders) {
+            Food food = foodRepository.findByName(foodOrder.getFoodName())
+                    .orElseThrow(() -> new IllegalArgumentException("해당 음식이 없습니다."));
 
-        Integer totalAmount = food.getPrice() * quantity;
+            Integer totalAmount = food.getPrice() * foodOrder.getQuantity();
 
-        Order order = Order.builder()
-                .foodName(foodName)
-                .quantity(quantity)
-                .ownerId(ownerId)
-                .food(food)
-                .paymentMethod(paymentMethod)
-                .totalAmount(totalAmount)
-                .tableId(tableId)
-                .orderStatus(OrderStatus.PENDING) // 주문 상태 기본값 비완료
-                .orderTime(LocalDateTime.now()) // 주문 시간 설정
-                .build();
+            Order order = Order.builder()
+                    .foodName(foodOrder.getFoodName())
+                    .quantity(foodOrder.getQuantity())
+                    .ownerId(ownerId)
+                    .food(food)
+                    .paymentMethod(paymentMethod)
+                    .totalAmount(totalAmount)
+                    .tableId(tableId)
+                    .orderStatus(OrderStatus.PENDING)
+                    .orderTime(LocalDateTime.now())
+                    .build();
 
-        return orderRepository.save(order);
+            orderRepository.save(order);
+        }
     }
 
     // 주문 상태 변경 (비완료 -> 완료)
