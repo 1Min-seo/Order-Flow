@@ -3,10 +3,12 @@ package com.project.orderflow.customer.service;
 import com.project.orderflow.admin.domain.Food;
 import com.project.orderflow.admin.repository.FoodRepository;
 import com.project.orderflow.customer.domain.Order;
+import com.project.orderflow.customer.domain.enums.OrderStatus;
 import com.project.orderflow.customer.domain.enums.PaymentMethod;
 import com.project.orderflow.customer.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -20,15 +22,13 @@ public class OrderService {
         this.foodRepository = foodRepository;
     }
 
-    // 일반 주문 및 결제 처리
-    public Order placeOrder(Long ownerId, String foodName, Integer quantity, PaymentMethod paymentMethod, Long tableId) { // option 삭제
+    // 주문 및 결제 처리
+    public Order placeOrder(Long ownerId, String foodName, Integer quantity, PaymentMethod paymentMethod, Long tableId) {
         Food food = foodRepository.findByName(foodName)
                 .orElseThrow(() -> new IllegalArgumentException("해당 음식이 없습니다."));
 
-        // 총 결제 금액 계산 (음식 가격 * 수량)
         Integer totalAmount = food.getPrice() * quantity;
 
-        // 주문 생성 및 저장
         Order order = Order.builder()
                 .foodName(foodName)
                 .quantity(quantity)
@@ -36,9 +36,20 @@ public class OrderService {
                 .food(food)
                 .paymentMethod(paymentMethod)
                 .totalAmount(totalAmount)
-                .tableId(tableId) // 테이블 ID 저장
+                .tableId(tableId)
+                .orderStatus(OrderStatus.PENDING) // 주문 상태 기본값 비완료
+                .orderTime(LocalDateTime.now()) // 주문 시간 설정
                 .build();
 
+        return orderRepository.save(order);
+    }
+
+    // 주문 상태 변경 (비완료 -> 완료)
+    public Order completeOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("주문이 존재하지 않습니다."));
+
+        order.setOrderStatus(OrderStatus.COMPLETED); // 상태 완료로 변경
         return orderRepository.save(order);
     }
 

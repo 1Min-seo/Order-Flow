@@ -20,7 +20,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@Tag(name = "테이블 연결(고객)", description = "테이블 연결")
+@Tag(name = "회원가입 및 관리(관리자)", description = "테이블 연결")
 @Slf4j
 public class AuthRestController {
     private final OwnerService ownerService;

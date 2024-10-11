@@ -48,5 +48,16 @@ public class OrderController {
         List<Order> orders = orderService.getOrderHistory(ownerId);
         return ResponseEntity.ok(orders);
     }
+
+    @Operation(
+            summary = "주문상태 관리(관리자)",
+            description = "비완료 -> 완료"
+    )
+    // 주문 상태 변경 (비완료 -> 완료)
+    @PutMapping("/complete-order/{orderId}")
+    public ResponseEntity<Order> completeOrder(@PathVariable Long orderId) {
+        Order order = orderService.completeOrder(orderId);
+        return ResponseEntity.ok(order);
+    }
 }
 

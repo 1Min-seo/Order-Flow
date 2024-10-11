@@ -1,6 +1,7 @@
 package com.project.orderflow.customer.domain;
 
 import com.project.orderflow.admin.domain.Food;
+import com.project.orderflow.customer.domain.enums.OrderStatus;
 import com.project.orderflow.customer.domain.enums.PaymentMethod;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -8,6 +9,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "order_table") // 테이블 이름을 명시적으로 설정
@@ -23,30 +26,39 @@ public class Order {
 
     private Integer quantity;
 
+    private String orderOption;
 
     @NotNull
-    private Long ownerId; // 매장 ID로 구분
+    private Long ownerId;
 
     @ManyToOne
     @JoinColumn(name = "food_id")
     private Food food;
 
     @Enumerated(EnumType.STRING)
-    private PaymentMethod paymentMethod; // 결제 방식 (현금, 카드, 카카오페이)
+    private PaymentMethod paymentMethod;
 
-    private Integer totalAmount; // 결제 금액
+    private Integer totalAmount;
 
     @NotNull
-    private Long tableId; // 테이블 ID 추가
+    private Long tableId;
+
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus; // 주문 상태 (비완료, 완료)
+
+    private LocalDateTime orderTime; // 주문 시간
 
     @Builder
-    public Order(String foodName, Integer quantity, Long ownerId, Food food, PaymentMethod paymentMethod, Integer totalAmount, Long tableId) { // tableId 추가
+    public Order(String foodName, Integer quantity, String orderOption, Long ownerId, Food food, PaymentMethod paymentMethod, Integer totalAmount, Long tableId, OrderStatus orderStatus, LocalDateTime orderTime) {
         this.foodName = foodName;
         this.quantity = quantity;
+        this.orderOption = orderOption;
         this.ownerId = ownerId;
         this.food = food;
         this.paymentMethod = paymentMethod;
         this.totalAmount = totalAmount;
-        this.tableId = tableId; // tableId 저장
+        this.tableId = tableId;
+        this.orderStatus = orderStatus; // 상태 초기화
+        this.orderTime = orderTime; // 주문 시간 설정
     }
 }

@@ -48,4 +48,15 @@ public class OptionOrderController {
         List<OptionOrder> orders = optionOrderService.getOptionOrderHistory(ownerId);
         return ResponseEntity.ok(orders);
     }
+
+    @Operation(
+            summary = "옵션 주문 상태관리(관리자)",
+            description = "해당 옵션주문의 id값"
+    )
+    // 옵션 주문 상태 변경 (비완료 -> 완료)
+    @PutMapping("/complete-option-order/{optionOrderId}")
+    public ResponseEntity<OptionOrder> completeOptionOrder(@PathVariable Long optionOrderId) {
+        OptionOrder optionOrder = optionOrderService.completeOptionOrder(optionOrderId);
+        return ResponseEntity.ok(optionOrder);
+    }
 }
