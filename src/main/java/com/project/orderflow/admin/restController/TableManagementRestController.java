@@ -7,6 +7,7 @@ import com.project.orderflow.admin.service.OwnerService;
 import com.project.orderflow.admin.service.TableManagementService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,23 +35,33 @@ public class TableManagementRestController {
         return ResponseEntity.ok("ok");
     }
 
-    @PostMapping("/{ownerId}/addSeats")
-    public ResponseEntity<?> addSeats(@PathVariable(name="ownerId") Long ownerId, @RequestParam int seatsToAdd){
-        Owner owner=ownerService.findOwnerById(ownerId);
-        tableManagementService.addSeats(owner, seatsToAdd);
+    @PostMapping("/{ownerId}/addSeat")
+    public ResponseEntity<?> addSeat(@PathVariable(name="ownerId") Long ownerId, @RequestParam Double x, @RequestParam Double y) {
+        Owner owner = ownerService.findOwnerById(ownerId);
 
-        log.info("좌석 {}개 추가", seatsToAdd);
+        if (owner == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 점주를 찾을 수 없습니다.");
+        }
+
+        tableManagementService.addSeat(owner, x, y);
+
+        log.info("좌석 추가: x={}, y={}", x, y);
         return ResponseEntity.ok("좌석 추가 완료");
     }
 
-    @PostMapping("/{ownerId}/removeSeats")
-    public ResponseEntity<?> removeSeats(@PathVariable(name="ownerId") Long ownerId, @RequestParam int seatsToRemove){
-        Owner owner=ownerService.findOwnerById(ownerId);
-        tableManagementService.deleteSeats(owner, seatsToRemove);
-
-        log.info("좌석 {}개 삭제", seatsToRemove);
-        return ResponseEntity.ok("좌석 삭제 완료");
+    // 좌석 삭제 API
+    @DeleteMapping("/{ownerId}/delete-seat/{seatId}")
+    public ResponseEntity<?> deleteSeat(@PathVariable Long ownerId, @PathVariable Long seatId) {
+        try {
+            tableManagementService.deleteSeat(ownerId, seatId);
+            return ResponseEntity.ok("좌석 삭제 완료");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("좌석 삭제 중 오류가 발생했습니다.");
+        }
     }
+
 
 
     @GetMapping("/{ownerId}/seats")
@@ -64,4 +75,18 @@ public class TableManagementRestController {
         return ResponseEntity.ok(seats);
     }
 
+    // 테이블 이동 시 좌석의 x, y 좌표 변경 API
+    @PutMapping("/{ownerId}/move-seat/{seatId}")
+    public ResponseEntity<?> moveSeat(@PathVariable Long ownerId, @PathVariable Long seatId, @RequestParam Double x, @RequestParam Double y) {
+        try {
+            tableManagementService.moveSeat(ownerId, seatId, x, y);
+            return ResponseEntity.ok("좌석 이동 완료");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("좌석 이동 중 오류가 발생했습니다.");
+        }
+    }
+
 }
+

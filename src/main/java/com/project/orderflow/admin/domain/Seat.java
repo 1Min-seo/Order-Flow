@@ -6,11 +6,14 @@ import jakarta.persistence.criteria.Order;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.util.List;
 
 @Entity
 @NoArgsConstructor
 @Getter
+@Setter
 public class Seat {
 
     @Id
@@ -28,6 +31,11 @@ public class Seat {
     @Column(nullable = false)
     private String qrUrl;
 
+    @Column(nullable = false)
+    private Double x;
+
+    @Column(nullable = false)
+    private Double y;
 
     @ManyToOne
     @JsonIgnore
@@ -35,12 +43,14 @@ public class Seat {
     private TableManagement tableManagement;
 
     @Builder
-    public Seat(String tableNumber, String authCode, TableManagement tableManagement, Boolean isActive, String qrUrl){
+    public Seat(String tableNumber, String authCode, TableManagement tableManagement, Boolean isActive, String qrUrl, Double x, Double y){
         this.tableNumber=tableNumber;
         this.authCode=authCode;
         this.tableManagement=tableManagement;
         this.isActive=isActive;
         this.qrUrl=qrUrl;
+        this.x = x;
+        this.y = y;
     }
 
     public Boolean activateSeat(String authCode){

@@ -13,4 +13,6 @@ public class SeatDto {
     private String tableNumber;
     private Long tableManagementId;
     private String qrUrl;
+    private Double x;
+    private Double y;
 }
