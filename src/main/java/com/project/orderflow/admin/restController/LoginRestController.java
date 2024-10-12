@@ -4,6 +4,8 @@ import com.project.orderflow.admin.domain.Owner;
 import com.project.orderflow.admin.dto.LoginDto;
 import com.project.orderflow.admin.service.OwnerService;
 import com.project.orderflow.Jwt.JwtUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,7 @@ import java.util.Optional;
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/api")
+@Tag(name = "로그인(관리자)", description = "JWT권한 없음. JWT토큰 발급")
 public class LoginRestController {
 
     private final OwnerService ownerService;
@@ -31,6 +34,11 @@ public class LoginRestController {
     @Autowired
     private JwtUtil jwtUtil;
 
+
+    @Operation(
+            summary = "로그인(JWT 권한 없음)",
+            description = "emial과 비밀번호 입력"
+    )
     @PostMapping("/login")
     public LoginResponseDTO login(@RequestBody LoginRequestDTO loginRequest) {
         log.info("로그인 요청");

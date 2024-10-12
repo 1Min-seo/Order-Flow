@@ -27,18 +27,32 @@ public class SongController {
     @Autowired
     private SongReqService songService;
 
+
+    @Operation(
+            summary = "노래를 신청하는 API(고객)",
+            description = "ownerId에는 JWT토큰에서 추출한 Id값을 넣어주시고, tableNumber에는 해당 테이블의 번호를 써주세요. reqiestedAt 시간은 yyyy.MM.dd HH:mm 이런 형식으로 넣어주세용"
+    )
     @PostMapping("/request")
     public ResponseEntity<String> requestSong(@RequestBody SongReqDto songReqDto) {
         songService.requestSong(songReqDto);
         return ResponseEntity.ok("노래 신청이 완료되었습니다.");
     }
 
+
+    @Operation(
+            summary = "노래를 신청 List(관리자)",
+            description = "ownerId는 JWT토큰에서 추출한 Id값을 넣어주세요."
+    )
     @GetMapping("/list/{ownerId}")
     public ResponseEntity<List<Song>> getSongsByOwnerId(@PathVariable Long ownerId) {
         List<Song> songs = songService.getSongsByOwnerId(ownerId);
         return ResponseEntity.ok(songs);
     }
 
+    @Operation(
+            summary = "노래 상태변화(관리자)",
+            description = "ownerId는 JWT토큰에서 추출한 Id값을 넣어주세요. 그리고 해당 노래의 id값을 넣어줘야함."
+    )
     @PutMapping("/status/{ownerId}/{songId}")
     public ResponseEntity<String> changeSongStatus(@PathVariable Long ownerId, @PathVariable Long songId, @RequestParam SongStatus newStatus) {
         songService.changeSongStatus(ownerId, songId, newStatus);

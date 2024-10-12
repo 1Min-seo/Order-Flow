@@ -81,43 +81,85 @@ public class TableManagementService {
         return sb.toString();
     }
 
-    public void addSeats(Owner owner, int additionalSeats) {
+    // 좌석을 추가할 때 x, y 좌표를 포함하는 메서드
+    public void addSeat(Owner owner, Double x, Double y) {
         TableManagement tableManagement = owner.getTableManagement();
 
         if (tableManagement != null) {
-            addSeatsToTableManagement(tableManagement, additionalSeats);
+            String authcode = generateSeatCode();
+            int currentSeatCount = tableManagement.getSeats().size();
+
+            Seat seat = Seat.builder()
+                    .tableNumber(String.valueOf(currentSeatCount + 1))
+                    .authCode(authcode)
+                    .tableManagement(tableManagement)
+                    .isActive(false)
+                    .qrUrl(qrCodeApiUrl + authcode)
+                    .x(x)
+                    .y(y)
+                    .build();
+
+            seatService.saveSeat(seat);
+            tableManagement.getSeats().add(seat);
+
+            // 좌석 개수 업데이트
+            tableManagement.setNumberOfSeats(tableManagement.getSeats().size());
+            tableManagementRepository.save(tableManagement);
         }
     }
 
-    public void deleteSeats(Owner owner, int removeSeats){
-        TableManagement tableManagement=owner.getTableManagement();
 
-        if(tableManagement!=null){
-            int currentSeats=tableManagement.getSeats().size();
-            int newSeatCount=currentSeats-removeSeats;
+    // 좌석 삭제 메서드
+    public void deleteSeat(Long ownerId, Long seatId) {
+        Owner owner = ownerRepository.findById(ownerId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 점주를 찾을 수 없습니다."));
 
-            log.info("현재 좌석 개수: {}", newSeatCount);
+        Seat seat = seatRepository.findById(seatId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 좌석을 찾을 수 없습니다."));
 
-            if(newSeatCount<0){
-                throw new IllegalArgumentException("좌석은 0개 이상이어야 합니다.");
-            }
-
-
-            List<Seat> seats= tableManagement.getSeats();
-            for(int i= currentSeats-1; i>=newSeatCount; i--){
-                seatService.deleteSeat(seats.get(i));
-                seats.remove(i);
-            }
-
-            tableManagement.setNumberOfSeats(newSeatCount);
-            tableManagementRepository.save(tableManagement);
-
+        // 좌석이 해당 점주의 테이블 관리에 속하는지 확인
+        if (!seat.getTableManagement().getOwner().getId().equals(ownerId)) {
+            throw new IllegalArgumentException("해당 좌석은 이 점주에게 속하지 않습니다.");
         }
+
+        // 좌석 삭제
+        seatRepository.delete(seat);
+
+        // 테이블 관리 좌석 수 업데이트
+        TableManagement tableManagement = seat.getTableManagement();
+        tableManagement.getSeats().remove(seat);
+        tableManagement.setNumberOfSeats(tableManagement.getSeats().size());
+        tableManagementRepository.save(tableManagement);
+
+        log.info("좌석 {}이 삭제되었습니다.", seatId);
     }
 
     public List<Seat> getSeatsByOwner(Owner owner) {
         TableManagement tableManagement = owner.getTableManagement();
         return tableManagement != null ? tableManagement.getSeats() : List.of();
+    }
+
+    // 좌석의 x, y 좌표를 변경하는 메서드
+    public void moveSeat(Long ownerId, Long seatId, Double x, Double y) {
+        Owner owner = ownerRepository.findById(ownerId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 점주를 찾을 수 없습니다."));
+
+        Seat seat = seatRepository.findById(seatId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 좌석을 찾을 수 없습니다."));
+
+        // 테이블 관리가 해당 점주의 것인지 확인 (옵션)
+        if (!seat.getTableManagement().getOwner().getId().equals(ownerId)) {
+            throw new IllegalArgumentException("해당 좌석은 이 점주에게 속하지 않습니다.");
+        }
+
+        // x, y 좌표 변경
+        seat.setX(x);
+        seat.setY(y);
+
+        // 변경 사항 저장
+        seatRepository.save(seat);
+
+        log.info("좌석 {}의 위치가 x={}, y={}로 변경되었습니다.", seatId, x, y);
     }
 
 

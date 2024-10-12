@@ -29,21 +29,19 @@ public class Food {
     @Min(0)
     private Integer price;
 
-//    @ManyToOne
-//    @JoinColumn(name="food_management_id", nullable=false)
-//    private FoodManagement foodManagement;
+    private Long tableManagementId;
 
     @ManyToOne
     @JoinColumn(name="category_id", nullable=false)
     private Category category;
 
     @Builder
-    public Food(String name, String description, int price, String imageUrl, Category category) {
+    public Food(String name, String description, int price, String imageUrl, Long tableManagementId ,Category category) {
         this.name = name;
         this.description = description;
         this.price = price;
         this.imageUrl = imageUrl;
-        //this.foodManagement = foodManagement;
+        this.tableManagementId = tableManagementId;
         this.category = category;
     }
 

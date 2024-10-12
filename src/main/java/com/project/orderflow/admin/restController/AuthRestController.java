@@ -6,6 +6,8 @@ import com.project.orderflow.admin.repository.OwnerRepository;
 import com.project.orderflow.admin.service.MailSendService;
 import com.project.orderflow.admin.service.OwnerService;
 //import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController;
@@ -18,6 +20,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@Tag(name = "회원가입 및 관리(관리자)", description = "테이블 연결")
 @Slf4j
 public class AuthRestController {
     private final OwnerService ownerService;
@@ -25,27 +28,11 @@ public class AuthRestController {
     private final BasicErrorController basicErrorController;
     private final OwnerRepository ownerRepository;
 
-    //메일 인증 요청
-    @PostMapping("/email/send")
-    public ResponseEntity<?> mailAuthCheck(@RequestBody EmailRequestDto emailRequestDto){
-        log.info("이메일 인증 코드 요청");
-        try{
-            String verifyCode = mailSendService.joinEmail(emailRequestDto.getEmail());
-            log.info("이메일 인증 코드 전송 성공: "+verifyCode);
-
-            return ResponseEntity.ok(Map.of(
-                    "message", "인증 이메일이 성공적으로 발송되었습니다.",
-                    "verifyCode", verifyCode
-            ));
-        }catch(Exception e){
-            log.error("이메일 인증 코드 전송 실패");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("message", "인증 이메일 발송을 실패하였습니다."));
-        } 
-
-    }
-
     //회원가입 요청
+    @Operation(
+            summary = "회원가입 신청(JWT권한없음)",
+            description = "email: 아이디 verifyCode: 핸드폰 인증번호"
+    )
     @PostMapping("/signUp/send")
     public ResponseEntity<?> signUpCheck(@RequestBody SignUpDto signUpDto){
         log.info("회원가입 요청");
@@ -71,6 +58,11 @@ public class AuthRestController {
 
     // 정보 수정
     // 사업자번호 수정, 비밀번호 수정
+    //회원가입 요청
+    @Operation(
+            summary = "회원정보 수정",
+            description = "onwerId: JWT Id추출 값"
+    )
     @PostMapping("/{ownerId}/updateInfo")
     public ResponseEntity<?> updateInfo(@PathVariable Long ownerId, @RequestBody InfoUpdateDto infoUpdateDto){
         log.info("정보 수정 요청");
@@ -84,6 +76,10 @@ public class AuthRestController {
         }
     }
 
+    @Operation(
+            summary = "회원정보 삭제",
+            description = "onwerId: JWT Id추출 값"
+    )
     @DeleteMapping("{ownerId}/deleteInfo")
     public ResponseEntity<?> deleteInfo(@PathVariable Long ownerId){
         Owner owner =ownerService.findOwnerById(ownerId);
