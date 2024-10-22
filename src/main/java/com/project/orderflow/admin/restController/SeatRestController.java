@@ -42,7 +42,7 @@ public class SeatRestController {
     )
     @PostMapping("/activate")
     public ResponseEntity<?> activateSeat(@RequestBody SeatAuthDto seatAuthDto) {
-        boolean isActivate = seatService.activateSeat(seatAuthDto.getTableNumber(), seatAuthDto.getAuthCode());
+        boolean isActivate = seatService.activateSeat(seatAuthDto.getAuthCode());
         // 사용자 인증
         if (!isActivate) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -51,12 +51,12 @@ public class SeatRestController {
 
         Optional<Seat> seat = seatRepository.findByAuthCode(seatAuthDto.getAuthCode());
         System.out.println("이거지: " + seat.get().getTableManagement().getId());
-        String jwt = jwtUtil.generateToken(seatAuthDto.getTableNumber(), seat.get().getTableManagement().getId() );
+        String jwt = jwtUtil.generateToken(seat.get().getTableNumber(), seat.get().getTableManagement().getId() );
         System.out.println("토큰" + jwt);
 
         return ResponseEntity.ok(Map.of("message", "테이블 연결 성공",
                 "Token:", jwt,
-                "TableNumber:",seatAuthDto.getTableNumber()));
+                "TableNumber:",seat.get().getTableNumber()));
     }
 }
 

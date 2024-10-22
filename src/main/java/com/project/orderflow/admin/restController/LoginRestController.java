@@ -5,21 +5,22 @@ import com.project.orderflow.admin.dto.LoginDto;
 import com.project.orderflow.admin.service.OwnerService;
 import com.project.orderflow.Jwt.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.project.orderflow.admin.dto.LoginDto;
-import com.project.orderflow.admin.dto.LoginResponseDTO;
 import com.project.orderflow.admin.dto.LoginRequestDTO;
+import com.project.orderflow.admin.dto.LoginResponseDTO;
 
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -34,11 +35,13 @@ public class LoginRestController {
     @Autowired
     private JwtUtil jwtUtil;
 
-
     @Operation(
             summary = "로그인(JWT 권한 없음)",
-            description = "emial과 비밀번호 입력"
+            description = "email과 비밀번호 입력 성공 시 데이터"
     )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "로그인 성공", content = @Content(schema = @Schema(implementation = LoginResponseDTO.class))),
+    })
     @PostMapping("/login")
     public LoginResponseDTO login(@RequestBody LoginRequestDTO loginRequest) {
         log.info("로그인 요청");
@@ -58,5 +61,4 @@ public class LoginRestController {
 
         return response;
     }
-
 }
