@@ -38,15 +38,19 @@ public class TableManagement {
         owner.setTableManagement(this);
     }
 
-    public void createSeats(SeatService seatService){
-        for(int i=0; i<numberOfSeats; i++){
-            Seat seat=Seat.builder()
-                    .tableNumber(String.valueOf(i+1))
+    public void createSeats(SeatService seatService) {
+        for (int i = 0; i < numberOfSeats; i++) {
+            Seat seat = Seat.builder()
+                    .tableNumber(String.valueOf(i + 1))
                     .authCode(generateSeatCode())
                     .tableManagement(this)
                     .isActive(false)
+                    .qrUrl("defaultQrUrl") // 필요에 따라 기본 URL 값 지정
+                    .x(0.0) // 기본 x 좌표 값 지정
+                    .y(0.0) // 기본 y 좌표 값 지정
                     .build();
-            seatService.saveSeat(seat);
+            this.seats.add(seat); // 좌석을 TableManagement의 seats 리스트에 추가
+            seatService.saveSeat(seat); // 데이터베이스에 좌석 저장
         }
     }
 
