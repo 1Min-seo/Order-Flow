@@ -41,7 +41,7 @@ public class FoodService {
         String fileName = foodRegistDto.getImage().getOriginalFilename();
         s3Service.uploadFile(foodRegistDto.getImage().getInputStream(), fileName);
 
-        String imageUrl = "https://orderflow-bk.s3.amazonaws.com/" + fileName;
+        String imageUrl = "https://orderflow-bk.s3.amazonaws.com/uploads/" + fileName;
 
         System.out.println(ownerId);
 
