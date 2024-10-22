@@ -10,6 +10,8 @@ import software.amazon.awssdk.core.sync.RequestBody;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 @Service
 public class S3Service {
@@ -26,11 +28,19 @@ public class S3Service {
     }
 
     public String uploadFile(InputStream inputStream, String fileName) throws IOException {
+        // 파일의 Content-Type 결정 (예: .png, .jpg 등)
+        String contentType = Files.probeContentType(Paths.get(fileName));
+        if (contentType == null) {
+            contentType = "application/octet-stream";  // 기본 값 설정
+        }
+
         String s3FileName = "uploads/" + fileName;
 
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(s3FileName)
+                .contentType(contentType)  // Content-Type 설정
+                .contentDisposition("inline")
                 .build();
 
         try {
