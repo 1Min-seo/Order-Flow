@@ -19,10 +19,10 @@ public class SeatService {
         seatRepository.save(seat);
     }
 
-    public boolean activateSeat(String tableNumber, String authCode){
+    public boolean activateSeat(String authCode){
         validateAuthCode(authCode);
-        Seat seat = seatRepository.findByTableNumberAndAuthCode(tableNumber, authCode)
-                .orElseThrow(() -> new EntityNotFoundException(tableNumber + "번 테이블을 찾을 수 없습니다."));
+        Seat seat = seatRepository.findByAuthCode(authCode)
+                .orElseThrow(() -> new EntityNotFoundException("해당 인증 코드를 가진 좌석을 찾을 수 없습니다."));
 
         boolean isActivated = seat.activateSeat(authCode);
         if (isActivated) {
