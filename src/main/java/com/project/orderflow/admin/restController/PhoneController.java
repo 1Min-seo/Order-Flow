@@ -26,7 +26,7 @@ public class PhoneController {
     Phone phones;
 
     @PostMapping("/phonecheck")
-    public ResponseEntity<?> phonecheck1(@RequestBody PhoneRequestDto phoneRequestDto) { // 'String' 제거
+    public ResponseEntity<?> phonecheck1(@RequestBody PhoneRequestDto phoneRequestDto) {
         phoneService.sendOne(phoneRequestDto.getPhone());
         phones.setPhoneNumber(phoneRequestDto.getPhone());
         System.out.println(phones.getPhoneNumber() + "받아옴");
