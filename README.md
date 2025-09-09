@@ -6,13 +6,14 @@
 
 ### OrderFlow(한이음 프로젝트)✅
 
-[<img src="https://img.shields.io/badge/-readme.md-important?style=flat&logo=google-chrome&logoColor=white" />]() [<img src="https://img.shields.io/badge/-tech blog-blue?style=flat&logo=google-chrome&logoColor=white" />]() [<img src="https://img.shields.io/badge/release-v0.0.0-yellow?style=flat&logo=google-chrome&logoColor=white" />]() 
+<img width="489" height="644" alt="image" src="https://github.com/user-attachments/assets/d904c035-374b-4f99-9a15-d9231b076de4" />
+
 <br/> [<img src="https://img.shields.io/badge/프로젝트 기간-2024.03.01~2024.10.01-green?style=flat&logo=&logoColor=white" />]()
 
 </div> 
 
 ## 📝 소개
-전기차 충전소 종합 플랫폼 IOS/Android/Web version
+소상공인을 위한 무료 테이블오더 IOS/Android/Web version
 
 기능
 - 가맹점 등록/관리
