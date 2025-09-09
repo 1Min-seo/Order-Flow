@@ -6,14 +6,21 @@
 
 ### OrderFlow(한이음 프로젝트)✅
 
-|요약|
-|:---:|
-|<img width="489" height="644" alt="image" src="https://github.com/user-attachments/assets/79cdb73b-6049-47fe-8f7c-114a879417e0" />|
+
+
+[<img src="https://img.shields.io/badge/-readme.md-important?style=flat&logo=google-chrome&logoColor=white" />]() [<img src="https://img.shields.io/badge/-tech blog-blue?style=flat&logo=google-chrome&logoColor=white" />]() [<img src="https://img.shields.io/badge/release-v0.0.0-yellow?style=flat&logo=google-chrome&logoColor=white" />]() 
+<br/> [<img src="https://img.shields.io/badge/프로젝트 기간-2024.03.01~2024.10.01-green?style=flat&logo=&logoColor=white" />]()
+
+
+<a href="https://youtu.be/33Fr0mrp0qk" target="_blank">
+  <img src="https://github.com/24HF063orderflow/Image/raw/main/Main/%EC%9E%A5%EB%B0%94%EA%B5%AC%EB%8B%88.png?raw=true" width="640" alt="RCG 유튜브 데모 영상">
+</a>
+<p>📺 프로젝트 시연 영상 보러가기</p>
 
 </div> 
 
 ## 📝 소개
-소상공인을 위한 무료 테이블오더 IOS/Android/Web version
+소상공인을 위한 테이블오더 IOS/Android/Web version
 
 기능
 - 가맹점 등록/관리
@@ -31,6 +38,12 @@
 
 <br />
 
+### 프로젝트 정보
+|요약|
+|:---:|
+|<img src="https://github.com/24HF063orderflow/Image/blob/main/%EC%9A%94%EC%95%BD%EB%B3%B8.png?raw=true" width="100%"/>|
+
+<br />
 
 ## 멘토
 |비씨카드(주)|
