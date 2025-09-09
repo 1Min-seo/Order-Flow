@@ -6,7 +6,9 @@
 
 ### OrderFlow(한이음 프로젝트)✅
 
-<br/> [<img src="https://img.shields.io/badge/프로젝트 기간-2024.03.01~2024.10.01-green?style=flat&logo=&logoColor=white" />]()
+|요약|
+|:---:|
+|<img src="https://github.com/24HF063orderflow/Image/blob/main/Main/%EC%9A%94%EC%95%BD%EB%B3%B8.png?raw=true" width="100%"/>|
 
 </div> 
 
@@ -29,12 +31,6 @@
 
 <br />
 
-### 프로젝트 정보
-|요약|
-|:---:|
-|<img src="https://github.com/24HF063orderflow/Image/blob/main/Main/%EC%9A%94%EC%95%BD%EB%B3%B8.png?raw=true" width="100%"/>|
-
-<br />
 
 ## 멘토
 |비씨카드(주)|
