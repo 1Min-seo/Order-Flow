@@ -8,8 +8,7 @@
 
 |요약|
 |:---:|
-|<img width="489" height="644" alt="image" src="https://github.com/user-attachments/assets/79cdb73b-6049-47fe-8f7c-114a879417e0" />
-|
+|<img width="489" height="644" alt="image" src="https://github.com/user-attachments/assets/79cdb73b-6049-47fe-8f7c-114a879417e0" />|
 
 </div> 
 
